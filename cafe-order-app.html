@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="카페발주">
+<title>카페 발주</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #F7F5F0;
+    --card: #FFFFFF;
+    --primary: #2C2C2C;
+    --accent: #C07B4A;
+    --muted: #9A8F85;
+    --border: #E5DDD5;
+    --need-color: #D94F4F;
+    --need-fill: #D94F4F;
+    --need-light: #FFF0F0;
+    --need-border: #F0BEBE;
+    --done-color: #3B6B5A;
+    --done-fill: #3B6B5A;
+    --done-light: #EEF5F2;
+    --done-border: #A8CCC3;
+    --complete-row: #F0F7F4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--primary);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* Sticky header */
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,245,240,0.95);
+    backdrop-filter: blur(10px);
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-bar h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .top-bar .date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .summary-bar {
+    display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .summary-chip {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px 12px;
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .summary-chip span { font-weight: 700; color: var(--primary); }
+  .summary-chip.need span { color: var(--need-color); }
+  .summary-chip.done span { color: var(--done-color); }
+
+  /* Sync status */
+  .sync-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .sync-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #ccc; margin-right: 6px;
+    display: inline-block; transition: background 0.3s;
+  }
+  .sync-dot.online { background: #3B6B5A; }
+  .sync-dot.syncing { background: #C07B4A; animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .btn-reset {
+    font-size: 12px; color: var(--need-color);
+    background: none; border: none; font-family: inherit;
+    cursor: pointer; font-weight: 600;
+  }
+
+  /* Main content */
+  .content { padding: 16px 14px; }
+
+  .section { margin-bottom: 24px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px; padding: 0 2px;
+  }
+  .section-title { display: flex; align-items: center; gap: 8px; }
+  .section-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .section-name { font-size: 15px; font-weight: 700; }
+  .section-count { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+  .col-header {
+    display: grid;
+    grid-template-columns: 1fr 86px 86px;
+    gap: 6px; padding: 0 14px 6px;
+  }
+  .col-label {
+    font-size: 11px; font-weight: 700;
+    text-align: center; line-height: 1.3;
+  }
+  .col-label.need-label { color: var(--need-color); }
+  .col-label.done-label { color: var(--done-color); }
+
+  .card {
+    background: var(--card); border-radius: 14px;
+    border: 1px solid var(--border); overflow: hidden;
+  }
+
+  .item {
+    display: grid;
+    grid-template-columns: 1fr 86px 86px;
+    gap: 6px; align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  .item:last-child { border-bottom: none; }
+  .item.fully-done { background: var(--complete-row); }
+
+  .item-name {
+    font-size: 14px; font-weight: 500;
+    line-height: 1.3; padding-right: 4px;
+  }
+  .item.fully-done .item-name {
+    color: #7BAF9E;
+    text-decoration: line-through;
+    text-decoration-color: #7BAF9E;
+  }
+
+  .date-cell {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+  }
+  .date-checkbox {
+    width: 26px; height: 26px; border-radius: 7px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  }
+  .date-checkbox svg { opacity: 0; transition: opacity 0.1s; }
+
+  .date-cell.need .date-checkbox { border-color: var(--need-border); }
+  .date-cell.need.active .date-checkbox {
+    background: var(--need-fill); border-color: var(--need-fill);
+  }
+  .date-cell.need.active .date-checkbox svg { opacity: 1; }
+
+  .date-cell.boss .date-checkbox { border-color: var(--done-border); }
+  .date-cell.boss.active .date-checkbox {
+    background: var(--done-fill); border-color: var(--done-fill);
+  }
+  .date-cell.boss.active .date-checkbox svg { opacity: 1; }
+
+  .date-tag {
+    font-size: 11px; font-weight: 600;
+    border-radius: 5px; padding: 2px 5px;
+    text-align: center; white-space: nowrap;
+    min-width: 50px; line-height: 1.4; cursor: pointer;
+  }
+  .date-cell.need .date-tag { background: var(--need-light); color: var(--need-color); border: 1px solid var(--need-border); }
+  .date-cell.boss .date-tag { background: var(--done-light); color: var(--done-color); border: 1px solid var(--done-border); }
+  .date-tag.empty { opacity: 0; pointer-events: none; }
+
+  /* Loading overlay */
+  .loading {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 999;
+  }
+  .loading .spinner {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { font-size: 14px; color: var(--muted); font-weight: 500; }
+
+  .legend {
+    display: flex; justify-content: center; gap: 16px;
+    padding: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--muted);
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .ldot { width: 9px; height: 9px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p>불러오는 중...</p>
+</div>
+
+<div class="top-bar">
+  <h1>☕ 카페 발주</h1>
+  <div class="date" id="dateDisplay"></div>
+  <div class="summary-bar">
+    <div class="summary-chip need">발주요망 <span id="needCount">0</span>개</div>
+    <div class="summary-chip done">발주완료 <span id="doneCount">0</span>개</div>
+    <div class="summary-chip">전체 <span id="totalCount">0</span>개</div>
+  </div>
+</div>
+
+<div class="sync-bar">
+  <div>
+    <span class="sync-dot" id="syncDot"></span>
+    <span id="syncText">연결 중...</span>
+  </div>
+  <button class="btn-reset" onclick="resetAll()">전체 초기화</button>
+</div>
+
+<div class="content">
+  <div class="legend">
+    <span><div class="ldot" style="background:var(--need-color)"></div> 발주요망 (직원)</span>
+    <span><div class="ldot" style="background:var(--done-color)"></div> 발주완료 (사장님)</span>
+  </div>
+  <br>
+  <div id="sections"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDKXC8ja_QQY3jT-sEH-UcxFeGppAv37Rc",
+  authDomain: "season-order.firebaseapp.com",
+  projectId: "season-order",
+  storageBucket: "season-order.firebasestorage.app",
+  messagingSenderId: "713136334900",
+  appId: "1:713136334900:web:7e6962501e4b82ab39c261",
+  measurementId: "G-20FT99L415"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const DOC_REF = doc(db, "checklist", "main");
+
+const data = [
+  {
+    name: "홀 일회용품",
+    color: "#3B6B5A",
+    items: [
+      "냅킨","화장실 휴지","물티슈","빨대","스무디 빨대",
+      "종이컵","Hot 컵","Hot 컵 뚜껑","ICE 컵","ICE 컵 뚜껑",
+      "컵홀더","포크","나이프",
+      "음료 1구","음료 2구",
+      "비닐봉투 소","비닐봉투 중","비닐봉투 대",
+      "비닐장갑",
+      "종이박스 소","종이박스 대",
+      "종이봉투 소","종이봉투 대",
+      "배달음료 종이","유산지","두쫀쿠 포장지",
+      "버터바 포장지","휘낭시에 포장지",
+      "노란색 테이프","테이프",
+      "고무장갑","행주"
+    ]
+  },
+  {
+    name: "재료",
+    color: "#7A4F35",
+    items: [
+      "우유","탄산수","사이다","애사비",
+      "우지말차","말차파우더","코코아파우더",
+      "빅트레인","가라델리 초코","요거트 파우더",
+      "슈가시럽",
+      "캐모마일","패퍼민트","애로스","후지야마","얼그레이",
+      "원두",
+      "레몬","자몽","패션후르츠","자몽원액",
+      "냉동 블루베리","냉동딸기",
+      "바닐라아이스크림","초코아이스크림",
+      "연유","딸기잼","블루베리잼","생강청"
+    ]
+  }
+];
+
+let state = {};
+let saving = false;
+
+const CHECK_SVG = `<svg width="12" height="9" viewBox="0 0 13 10" fill="none">
+  <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+function getKey(si, item) { return `${si}__${item.replace(/\s/g,'_')}`; }
+
+function setSyncStatus(status) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  if (status === 'online') {
+    dot.className = 'sync-dot online';
+    txt.textContent = '실시간 연결됨';
+  } else if (status === 'syncing') {
+    dot.className = 'sync-dot syncing';
+    txt.textContent = '저장 중...';
+  } else {
+    dot.className = 'sync-dot';
+    txt.textContent = '연결 중...';
+  }
+}
+
+async function saveToFirebase() {
+  saving = true;
+  setSyncStatus('syncing');
+  try {
+    await setDoc(DOC_REF, { state });
+    setSyncStatus('online');
+  } catch(e) {
+    console.error(e);
+  }
+  saving = false;
+}
+
+function toggleField(key, field) {
+  if (!state[key]) state[key] = { need: false, needDate: '', boss: false, bossDate: '' };
+  const cur = state[key][field];
+  state[key][field] = !cur;
+  const dateField = field + 'Date';
+  state[key][dateField] = !cur ? todayStr() : '';
+  saveToFirebase();
+  render();
+}
+
+function editDate(key, dateField) {
+  const cur = state[key]?.[dateField] || '';
+  const val = prompt('날짜 입력 (예: 6/15)', cur);
+  if (val === null) return;
+  if (!state[key]) state[key] = { need: false, needDate: '', boss: false, bossDate: '' };
+  state[key][dateField] = val.trim();
+  saveToFirebase();
+  render();
+}
+
+window.resetAll = function() {
+  if (!confirm('전체 초기화할까요?\n모든 체크가 사라져요.')) return;
+  state = {};
+  saveToFirebase();
+  render();
+};
+
+function render() {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+  let totalAll = 0, needAll = 0, doneAll = 0;
+
+  data.forEach((section, si) => {
+    let needCount = 0, bossCount = 0;
+    section.items.forEach(item => {
+      const key = getKey(si, item);
+      if (!state[key]) state[key] = { need: false, needDate: '', boss: false, bossDate: '' };
+      if (state[key].need) needCount++;
+      if (state[key].boss) bossCount++;
+    });
+    totalAll += section.items.length;
+    needAll += needCount;
+    doneAll += bossCount;
+
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'section';
+    sectionEl.innerHTML = `
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-dot" style="background:${section.color}"></div>
+          <div class="section-name">${section.name}</div>
+        </div>
+        <div class="section-count">발주요망 ${needCount} · 완료 ${bossCount}</div>
+      </div>
+      <div class="col-header">
+        <div></div>
+        <div class="col-label need-label">🔴 발주요망<br><span style="font-weight:400;font-size:10px">직원 체크</span></div>
+        <div class="col-label done-label">🟢 발주완료<br><span style="font-weight:400;font-size:10px">사장님 체크</span></div>
+      </div>
+      <div class="card" id="card-${si}"></div>
+    `;
+    container.appendChild(sectionEl);
+
+    const card = document.getElementById(`card-${si}`);
+    section.items.forEach(item => {
+      const key = getKey(si, item);
+      const s = state[key];
+      const fullyDone = s.need && s.boss;
+
+      const el = document.createElement('div');
+      el.className = 'item' + (fullyDone ? ' fully-done' : '');
+      el.innerHTML = `
+        <div class="item-name">${item}</div>
+        <div class="date-cell need ${s.need ? 'active' : ''}" data-key="${key}" data-field="need">
+          <div class="date-checkbox">${CHECK_SVG}</div>
+          <div class="date-tag ${s.needDate ? '' : 'empty'}" data-key="${key}" data-datefield="needDate">${s.needDate || '날짜'}</div>
+        </div>
+        <div class="date-cell boss ${s.boss ? 'active' : ''}" data-key="${key}" data-field="boss">
+          <div class="date-checkbox">${CHECK_SVG}</div>
+          <div class="date-tag ${s.bossDate ? '' : 'empty'}" data-key="${key}" data-datefield="bossDate">${s.bossDate || '날짜'}</div>
+        </div>
+      `;
+
+      el.querySelectorAll('.date-cell').forEach(cell => {
+        cell.addEventListener('click', (e) => {
+          if (e.target.classList.contains('date-tag') && !e.target.classList.contains('empty')) return;
+          toggleField(cell.dataset.key, cell.dataset.field);
+        });
+      });
+      el.querySelectorAll('.date-tag:not(.empty)').forEach(tag => {
+        tag.addEventListener('click', (e) => {
+          e.stopPropagation();
+          editDate(tag.dataset.key, tag.dataset.datefield);
+        });
+      });
+
+      card.appendChild(el);
+    });
+  });
+
+  document.getElementById('needCount').textContent = needAll;
+  document.getElementById('doneCount').textContent = doneAll;
+  document.getElementById('totalCount').textContent = totalAll;
+}
+
+// Date display
+const now = new Date();
+document.getElementById('dateDisplay').textContent =
+  `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+
+// Real-time listener from Firestore
+onSnapshot(DOC_REF, (snap) => {
+  document.getElementById('loading').style.display = 'none';
+  setSyncStatus('online');
+  if (snap.exists()) {
+    state = snap.data().state || {};
+  }
+  render();
+}, (err) => {
+  console.error(err);
+  document.getElementById('loading').style.display = 'none';
+  setSyncStatus('offline');
+  render();
+});
+</script>
+</body>
+</html>

@@ -8,188 +8,228 @@
 <meta name="apple-mobile-web-app-title" content="카페발주">
 <title>카페 발주</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
-  :root {
-    --bg:#F7F5F0; --card:#fff; --primary:#2C2C2C; --accent:#C07B4A;
-    --muted:#9A8F85; --border:#E5DDD5;
-    --need:#D94F4F; --need-light:#FFF0F0; --need-border:#F0BEBE;
-    --done:#3B6B5A; --done-light:#EEF5F2; --done-border:#A8CCC3;
-    --complete:#F0F7F4;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--primary);min-height:100vh;padding-bottom:80px;}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#F7F5F0;--card:#fff;--primary:#2C2C2C;--accent:#C07B4A;
+  --muted:#9A8F85;--border:#E5DDD5;
+  --need:#D94F4F;--need-light:#FFF0F0;--need-border:#F0BEBE;
+  --done:#3B6B5A;--done-light:#EEF5F2;--done-border:#A8CCC3;
+  --complete:#F0F7F4;--tab-h:60px;--nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--primary);min-height:100vh;padding-bottom:calc(var(--tab-h) + 10px);}
 
-  /* ── TOP BAR ── */
-  .top-bar{position:sticky;top:0;z-index:100;background:rgba(247,245,240,.97);backdrop-filter:blur(10px);padding:12px 16px 10px;border-bottom:1px solid var(--border);}
-  .top-row{display:flex;align-items:center;justify-content:space-between;}
-  .top-bar h1{font-size:19px;font-weight:700;}
-  .top-date{font-size:11px;color:var(--muted);margin-top:2px;}
-  .top-icons{display:flex;gap:6px;align-items:center;}
-  .icon-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px;position:relative;}
-  .badge{position:absolute;top:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--need);display:none;}
-  .badge.show{display:block;}
-  .chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
-  .chip{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:500;color:var(--muted);display:flex;gap:4px;}
-  .chip span{font-weight:700;color:var(--primary);}
-  .chip.need span{color:var(--need);}
-  .chip.done span{color:var(--done);}
+/* ── TOP NAV ── */
+.topnav{position:sticky;top:0;z-index:200;background:rgba(247,245,240,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.topnav-inner{display:flex;align-items:center;padding:0 4px;height:var(--nav-h);}
+.back-btn{display:none;align-items:center;gap:2px;color:var(--accent);font-size:15px;font-weight:600;background:none;border:none;font-family:inherit;cursor:pointer;padding:8px 10px;min-width:60px;}
+.back-btn.show{display:flex;}
+.back-arrow{font-size:20px;line-height:1;}
+.nav-title{flex:1;text-align:center;font-size:16px;font-weight:700;letter-spacing:-.01em;}
+.nav-right{min-width:60px;display:flex;justify-content:flex-end;align-items:center;gap:4px;}
+.icon-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:6px;position:relative;}
+.badge{position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--need);display:none;}
+.badge.show{display:block;}
 
-  /* ── SYNC BAR ── */
-  .sync-bar{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;background:var(--card);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);}
-  .sync-dot{width:8px;height:8px;border-radius:50%;background:#ccc;display:inline-block;margin-right:5px;transition:background .3s;}
-  .sync-dot.online{background:var(--done);}
-  .sync-dot.syncing{background:var(--accent);animation:pulse .8s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  .btn-reset{font-size:12px;color:var(--need);background:none;border:none;font-family:inherit;cursor:pointer;font-weight:600;}
+/* chips */
+.chips-bar{padding:6px 14px 10px;display:flex;gap:6px;flex-wrap:wrap;}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:500;color:var(--muted);display:flex;gap:4px;}
+.chip span{font-weight:700;color:var(--primary);}
+.chip.need span{color:var(--need);}
+.chip.done span{color:var(--done);}
 
-  /* ── RECENT BAR ── */
-  .recent-bar{background:#FFF8F0;border-bottom:1px solid #F0DEC8;padding:10px 16px;display:none;}
-  .recent-bar.show{display:block;}
-  .recent-title{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.05em;margin-bottom:6px;}
-  .recent-item{display:flex;align-items:center;gap:8px;font-size:12px;background:#fff;border-radius:8px;padding:6px 10px;border:1px solid #F0DEC8;cursor:pointer;margin-bottom:4px;}
-  .recent-item:active{background:#FFF0E0;}
-  .rdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-  .recent-close{font-size:11px;color:var(--muted);text-align:right;cursor:pointer;font-weight:600;margin-top:4px;}
+/* sync */
+.sync-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;background:var(--card);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;margin-right:5px;transition:background .3s;}
+.sync-dot.online{background:var(--done);}
+.sync-dot.syncing{background:var(--accent);animation:pulse .8s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-reset{font-size:12px;color:var(--need);background:none;border:none;font-family:inherit;cursor:pointer;font-weight:600;}
 
-  /* ── HOME: CATEGORY CARDS ── */
-  #home-view{padding:16px 14px;}
-  .home-title{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px;letter-spacing:.03em;}
-  .cat-grid{display:flex;flex-direction:column;gap:10px;}
-  .cat-card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s;}
-  .cat-card:active{background:#F5F2EE;}
-  .cat-icon{font-size:22px;flex-shrink:0;}
-  .cat-info{flex:1;}
-  .cat-name{font-size:15px;font-weight:700;}
-  .cat-sub{font-size:12px;color:var(--muted);margin-top:2px;}
-  .cat-badges{display:flex;gap:6px;margin-top:6px;}
-  .cat-badge{font-size:11px;font-weight:600;border-radius:999px;padding:2px 9px;}
-  .cat-badge.need{background:var(--need-light);color:var(--need);border:1px solid var(--need-border);}
-  .cat-badge.done{background:var(--done-light);color:var(--done);border:1px solid var(--done-border);}
-  .cat-chevron{font-size:18px;color:var(--border);}
+/* recent */
+.recent-bar{background:#FFF8F0;border-bottom:1px solid #F0DEC8;padding:10px 16px;display:none;}
+.recent-bar.show{display:block;}
+.recent-title{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.05em;margin-bottom:6px;}
+.recent-item{display:flex;align-items:center;gap:8px;font-size:12px;background:#fff;border-radius:8px;padding:6px 10px;border:1px solid #F0DEC8;cursor:pointer;margin-bottom:4px;}
+.rdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.recent-close{font-size:11px;color:var(--muted);text-align:right;cursor:pointer;font-weight:600;margin-top:4px;}
 
-  /* ── DETAIL VIEW ── */
-  #detail-view{display:none;padding-bottom:20px;}
-  .detail-back{display:flex;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);background:var(--card);}
-  .detail-content{padding:14px 14px;}
+/* ── BOTTOM TAB BAR ── */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(247,245,240,.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;height:var(--tab-h);padding-bottom:env(safe-area-inset-bottom);}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;background:none;border:none;font-family:inherit;font-size:10px;font-weight:600;color:var(--muted);transition:color .15s;padding:6px 0;}
+.tab.active{color:var(--accent);}
+.tab-icon{font-size:22px;line-height:1;}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0;margin-top:1px;}
+.tab.active .tab-dot{opacity:1;}
 
-  .section{margin-bottom:20px;}
-  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding:0 2px;}
-  .section-title{display:flex;align-items:center;gap:8px;}
-  .sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-  .section-name{font-size:14px;font-weight:700;}
-  .section-count{font-size:11px;color:var(--muted);}
+/* ── PAGES ── */
+.page{display:none;padding:14px 14px 20px;}
+.page.active{display:block;}
 
-  .col-header{display:grid;grid-template-columns:1fr 72px 72px;gap:4px;padding:0 12px 5px;}
-  .col-label{font-size:10px;font-weight:700;text-align:center;line-height:1.3;}
-  .col-label.nl{color:var(--need);}
-  .col-label.dl{color:var(--done);}
+/* home cat grid */
+.home-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;letter-spacing:.03em;}
+.cat-grid{display:flex;flex-direction:column;gap:8px;}
+.cat-card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s;}
+.cat-card:active{background:#F0EDE8;}
+.cat-icon{font-size:22px;flex-shrink:0;}
+.cat-info{flex:1;}
+.cat-name{font-size:15px;font-weight:700;}
+.cat-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.cat-badges{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.cat-badge{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;}
+.cat-badge.need{background:var(--need-light);color:var(--need);border:1px solid var(--need-border);}
+.cat-badge.done{background:var(--done-light);color:var(--done);border:1px solid var(--done-border);}
+.chevron{font-size:20px;color:var(--border);}
 
-  .card{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;}
+/* detail */
+.detail-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:0 2px;}
+.detail-icon{font-size:22px;}
+.detail-name{font-size:17px;font-weight:700;}
 
-  .item{display:grid;grid-template-columns:1fr 72px 72px;gap:4px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);transition:background .12s;}
-  .item:last-child{border-bottom:none;}
-  .item.fully-done{background:var(--complete);}
-  .item.highlight{animation:flash 1.5s ease;}
-  @keyframes flash{0%{background:#FFF3CD}100%{background:transparent}}
-  .item-name{font-size:13px;font-weight:500;line-height:1.3;padding-right:4px;}
-  .item.fully-done .item-name{color:#7BAF9E;text-decoration:line-through;text-decoration-color:#7BAF9E;}
+.section{margin-bottom:18px;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;padding:0 2px;}
+.sec-title{display:flex;align-items:center;gap:7px;}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sec-name{font-size:13px;font-weight:700;}
+.sec-count{font-size:11px;color:var(--muted);}
 
-  .dcell{display:flex;flex-direction:column;align-items:center;gap:3px;}
-  .dchk{width:24px;height:24px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
-  .dchk svg{opacity:0;transition:opacity .1s;}
-  .dcell.need .dchk{border-color:var(--need-border);}
-  .dcell.need.active .dchk{background:var(--need);border-color:var(--need);}
-  .dcell.need.active .dchk svg{opacity:1;}
-  .dcell.boss .dchk{border-color:var(--done-border);}
-  .dcell.boss.active .dchk{background:var(--done);border-color:var(--done);}
-  .dcell.boss.active .dchk svg{opacity:1;}
-  .dtag{font-size:10px;font-weight:600;border-radius:4px;padding:1px 4px;text-align:center;white-space:nowrap;min-width:44px;line-height:1.4;cursor:pointer;}
-  .dcell.need .dtag{background:var(--need-light);color:var(--need);border:1px solid var(--need-border);}
-  .dcell.boss .dtag{background:var(--done-light);color:var(--done);border:1px solid var(--done-border);}
-  .dtag.empty{opacity:0;pointer-events:none;}
+.col-header{display:grid;grid-template-columns:1fr 70px 70px;gap:4px;padding:0 12px 4px;}
+.col-label{font-size:10px;font-weight:700;text-align:center;line-height:1.3;}
+.col-label.nl{color:var(--need);}
+.col-label.dl{color:var(--done);}
 
-  /* Add item */
-  .add-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;border-top:1px dashed var(--border);background:#FAFAF8;}
-  .add-btn:active{background:#F0EDE8;}
-  .add-btn .plus{font-size:15px;color:var(--accent);}
-  .add-row{display:flex;gap:6px;align-items:center;padding:8px 12px;border-top:1px solid var(--border);background:#FFFDF9;}
-  .add-input{flex:1;border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:13px;font-family:inherit;outline:none;background:#fff;min-width:0;}
-  .add-input:focus{border-color:var(--accent);}
-  .add-ok{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;}
-  .add-cancel{background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.card{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;}
 
-  /* Toast */
-  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2C2C2C;color:#fff;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
-  .toast.show{opacity:1;}
+.item{display:grid;grid-template-columns:1fr 70px 70px;gap:4px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);transition:background .12s;}
+.item:last-child{border-bottom:none;}
+.item.fully-done{background:var(--complete);}
+.item.highlight{animation:flash 1.5s ease;}
+@keyframes flash{0%{background:#FFF3CD}100%{background:transparent}}
 
-  /* Undo bar */
-  .undo-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#2C2C2C;color:#fff;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:500;z-index:998;display:none;align-items:center;gap:14px;white-space:nowrap;}
-  .undo-bar.show{display:flex;}
-  .undo-btn{color:#FFD700;font-weight:700;background:none;border:none;font-family:inherit;font-size:13px;cursor:pointer;}
+.item-left{display:flex;align-items:center;gap:6px;}
+.item-name{font-size:13px;font-weight:500;line-height:1.3;}
+.item.fully-done .item-name{color:#7BAF9E;text-decoration:line-through;text-decoration-color:#7BAF9E;}
+.del-btn{background:none;border:none;color:#ccc;font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;flex-shrink:0;display:none;}
+.edit-mode .del-btn{display:block;}
 
-  /* Loading */
-  .loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;}
-  .spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .loading p{font-size:14px;color:var(--muted);font-weight:500;}
+.dcell{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.dchk{width:24px;height:24px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.dchk svg{opacity:0;transition:opacity .1s;}
+.dcell.need .dchk{border-color:var(--need-border);}
+.dcell.need.active .dchk{background:var(--need);border-color:var(--need);}
+.dcell.need.active .dchk svg{opacity:1;}
+.dcell.boss .dchk{border-color:var(--done-border);}
+.dcell.boss.active .dchk{background:var(--done);border-color:var(--done);}
+.dcell.boss.active .dchk svg{opacity:1;}
+.dtag{font-size:10px;font-weight:600;border-radius:4px;padding:1px 4px;text-align:center;white-space:nowrap;min-width:42px;line-height:1.4;cursor:pointer;}
+.dcell.need .dtag{background:var(--need-light);color:var(--need);border:1px solid var(--need-border);}
+.dcell.boss .dtag{background:var(--done-light);color:var(--done);border:1px solid var(--done-border);}
+.dtag.empty{opacity:0;pointer-events:none;}
 
-  .legend{display:flex;justify-content:center;gap:16px;padding:10px 0 0;font-size:12px;font-weight:600;color:var(--muted);}
-  .legend span{display:flex;align-items:center;gap:5px;}
-  .ldot{width:9px;height:9px;border-radius:2px;}
+/* add/edit row */
+.card-footer{border-top:1px dashed var(--border);}
+.add-btn-row{display:flex;align-items:center;gap:6px;padding:8px 12px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:500;background:#FAFAF8;}
+.add-btn-row:active{background:#F0EDE8;}
+.plus{font-size:15px;color:var(--accent);}
+.add-input-row{display:flex;gap:6px;align-items:center;padding:8px 12px;background:#FFFDF9;}
+.add-input{flex:1;border:1.5px solid var(--border);border-radius:7px;padding:6px 9px;font-size:13px;font-family:inherit;outline:none;background:#fff;min-width:0;}
+.add-input:focus{border-color:var(--accent);}
+.add-ok{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:6px 11px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;}
+.add-cancel{background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:7px;padding:6px 8px;font-size:12px;font-family:inherit;cursor:pointer;}
+
+/* edit toggle */
+.edit-toggle{font-size:12px;font-weight:600;color:var(--accent);background:none;border:none;font-family:inherit;cursor:pointer;padding:6px 8px;}
+
+/* legend */
+.legend{display:flex;justify-content:center;gap:16px;padding:6px 0 14px;font-size:12px;font-weight:600;color:var(--muted);}
+.legend span{display:flex;align-items:center;gap:5px;}
+.ldot{width:9px;height:9px;border-radius:2px;display:inline-block;}
+
+/* toast */
+.toast{position:fixed;bottom:calc(var(--tab-h) + 12px);left:50%;transform:translateX(-50%);background:#2C2C2C;color:#fff;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* undo */
+.undo-bar{position:fixed;bottom:calc(var(--tab-h) + 10px);left:50%;transform:translateX(-50%);background:#2C2C2C;color:#fff;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:500;z-index:998;display:none;align-items:center;gap:14px;white-space:nowrap;}
+.undo-bar.show{display:flex;}
+.undo-btn{color:#FFD700;font-weight:700;background:none;border:none;font-family:inherit;font-size:13px;cursor:pointer;}
+
+/* loading */
+.loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:999;}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{font-size:14px;color:var(--muted);}
 </style>
 </head>
 <body>
 
 <div class="loading" id="loading"><div class="spinner"></div><p>불러오는 중...</p></div>
 
-<div class="top-bar">
-  <div class="top-row">
-    <div><h1>☕ 카페 발주</h1><div class="top-date" id="dateDisplay"></div></div>
-    <div class="top-icons">
+<!-- TOP NAV -->
+<div class="topnav">
+  <div class="topnav-inner">
+    <button class="back-btn" id="backBtn" onclick="goBack()"><span class="back-arrow">‹</span>뒤로</button>
+    <div class="nav-title" id="navTitle">☕ 카페 발주</div>
+    <div class="nav-right">
       <button class="icon-btn" onclick="toggleNotif()" id="notifBtn" title="알림">🔔<div class="badge" id="notifBadge"></div></button>
       <button class="icon-btn" onclick="toggleRecent()" title="최근변경">📋</button>
     </div>
   </div>
-  <div class="chips">
-    <div class="chip need">발주요망 <span id="needCount">0</span>개</div>
-    <div class="chip done">발주완료 <span id="doneCount">0</span>개</div>
-    <div class="chip">전체 <span id="totalCount">0</span>개</div>
+  <div class="chips-bar">
+    <div class="chip need">발주요망 <span id="needCount">0</span></div>
+    <div class="chip done">발주완료 <span id="doneCount">0</span></div>
+    <div class="chip">전체 <span id="totalCount">0</span></div>
   </div>
 </div>
 
+<!-- SYNC -->
 <div class="sync-bar">
   <div><span class="sync-dot" id="syncDot"></span><span id="syncText">연결 중...</span></div>
   <button class="btn-reset" onclick="resetAll()">전체 초기화</button>
 </div>
 
+<!-- RECENT -->
 <div class="recent-bar" id="recentBar">
   <div class="recent-title">🔔 최근 변경사항</div>
   <div id="recentList"></div>
   <div class="recent-close" onclick="closeRecent()">✓ 확인했어요</div>
 </div>
 
-<!-- HOME -->
-<div id="home-view">
+<!-- PAGES -->
+<div id="page-home" class="page active">
   <div class="legend">
     <span><div class="ldot" style="background:var(--need)"></div>발주요망(직원)</span>
     <span><div class="ldot" style="background:var(--done)"></div>발주완료(사장님)</span>
   </div>
-  <br>
-  <div class="home-title">카테고리 선택</div>
+  <div class="home-label" id="homeLabel">카테고리 선택</div>
   <div class="cat-grid" id="catGrid"></div>
 </div>
 
-<!-- DETAIL -->
-<div id="detail-view">
-  <div class="detail-back" onclick="goHome()">‹ 뒤로</div>
-  <div class="detail-content" id="detailContent"></div>
+<div id="page-detail" class="page">
+  <div id="detailContent"></div>
+</div>
+
+<!-- BOTTOM TAB BAR -->
+<div class="tabbar">
+  <button class="tab active" id="tab-hall" onclick="switchTab('hall')">
+    <div class="tab-icon">🏠</div>
+    <div>홀</div>
+    <div class="tab-dot"></div>
+  </button>
+  <button class="tab" id="tab-baking" onclick="switchTab('baking')">
+    <div class="tab-icon">🎂</div>
+    <div>베이킹</div>
+    <div class="tab-dot"></div>
+  </button>
+  <button class="tab" id="tab-all" onclick="switchTab('all')">
+    <div class="tab-icon">📋</div>
+    <div>전체</div>
+    <div class="tab-dot"></div>
+  </button>
 </div>
 
 <div class="toast" id="toast"></div>
-<div class="undo-bar" id="undoBar">
-  <span id="undoMsg"></span>
-  <button class="undo-btn" onclick="doUndo()">↩ 되돌리기</button>
-</div>
+<div class="undo-bar" id="undoBar"><span id="undoMsg"></span><button class="undo-btn" onclick="doUndo()">↩ 되돌리기</button></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
@@ -205,60 +245,57 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const STATE_REF = doc(db, "checklist", "main");
-const RECENT_REF = doc(db, "checklist", "recent");
+const STATE_REF = doc(db,"checklist","mainV2");
 
-// ── Data structure: categories → sections → items ──
 const DEFAULT_CATS = [
-  { id:"hall", name:"홀 · 소모품", icon:"🏠", color:"#3B6B5A",
-    sections:[
-      { name:"컵류", items:["종이컵","Hot 컵","Hot 컵 뚜껑","ICE 컵","ICE 컵 뚜껑","컵홀더"] },
-      { name:"빨대류", items:["빨대","스무디 빨대"] },
-      { name:"냅킨 · 휴지류", items:["냅킨","화장실 휴지","물티슈"] },
-      { name:"식기류", items:["포크","나이프"] }
-    ]
-  },
-  { id:"pack", name:"포장재", icon:"📦", color:"#7A4F35",
+  // ── 홀 ──
+  { id:"hall_cup", tab:"hall", name:"컵류", icon:"🥤", color:"#3B6B5A",
+    sections:[{ name:"컵류", items:["종이컵","Hot 컵","Hot 컵 뚜껑","ICE 컵","ICE 컵 뚜껑","컵홀더"] }]},
+  { id:"hall_straw", tab:"hall", name:"빨대류", icon:"🧉", color:"#3B6B5A",
+    sections:[{ name:"빨대류", items:["빨대","스무디 빨대"] }]},
+  { id:"hall_napkin", tab:"hall", name:"냅킨 · 휴지류", icon:"🧻", color:"#3B6B5A",
+    sections:[{ name:"냅킨 · 휴지류", items:["냅킨","화장실 휴지","물티슈"] }]},
+  { id:"hall_cutlery", tab:"hall", name:"식기류", icon:"🍴", color:"#3B6B5A",
+    sections:[{ name:"식기류", items:["포크","나이프"] }]},
+  { id:"hall_pack", tab:"hall", name:"포장재", icon:"📦", color:"#7A4F35",
     sections:[
       { name:"캐리어 · 봉투", items:["음료 1구","음료 2구","비닐봉투 소","비닐봉투 중","비닐봉투 대","종이봉투 소","종이봉투 대"] },
       { name:"박스류", items:["종이박스 소","종이박스 대"] },
       { name:"포장용 자재", items:["유산지","배달음료 종이","두쫀쿠 포장지","버터바 포장지","휘낭시에 포장지","노란색 테이프","테이프"] }
-    ]
-  },
-  { id:"clean", name:"청소 · 위생용품", icon:"🧹", color:"#5A6B7A",
-    sections:[
-      { name:"위생용품", items:["비닐장갑","고무장갑","행주"] }
-    ]
-  },
-  { id:"drink", name:"음료 베이스", icon:"🥛", color:"#4A7A5A",
+    ]},
+  { id:"hall_clean", tab:"hall", name:"청소 · 위생", icon:"🧹", color:"#5A6B7A",
+    sections:[{ name:"위생용품", items:["비닐장갑","고무장갑","행주"] }]},
+  { id:"hall_candle", tab:"hall", name:"양초", icon:"🕯️", color:"#B07A30",
+    sections:[{ name:"양초류", items:["숫자초","동물초"] }]},
+  { id:"hall_drink", tab:"hall", name:"음료 베이스", icon:"🥛", color:"#4A7A5A",
     sections:[
       { name:"우유 · 탄산", items:["우유","탄산수","사이다"] },
       { name:"시럽 · 베이스", items:["슈가시럽","애사비","연유"] },
       { name:"파우더류", items:["우지말차","말차파우더","코코아파우더","빅트레인","가라델리 초코","요거트 파우더"] }
-    ]
-  },
-  { id:"tea", name:"티(Tea)", icon:"🍵", color:"#7A5A35",
-    sections:[
-      { name:"티류", items:["캐모마일","페퍼민트","애로스","후지야마","얼그레이"] }
-    ]
-  },
-  { id:"coffee", name:"커피", icon:"☕", color:"#5C3D2E",
-    sections:[
-      { name:"원두", items:["원두"] }
-    ]
-  },
-  { id:"fruit", name:"과일 · 에이드 재료", icon:"🍋", color:"#7A7A35",
-    sections:[
-      { name:"과일 · 에이드", items:["레몬","자몽","패션후르츠","자몽원액","생강청"] }
-    ]
-  },
-  { id:"frozen", name:"냉동 · 디저트 재료", icon:"🍓", color:"#5A3575",
+    ]},
+  { id:"hall_tea", tab:"hall", name:"티(Tea)", icon:"🍵", color:"#7A5A35",
+    sections:[{ name:"티류", items:["캐모마일","페퍼민트","애로스","후지야마","얼그레이"] }]},
+  { id:"hall_coffee", tab:"hall", name:"커피", icon:"☕", color:"#5C3D2E",
+    sections:[{ name:"원두", items:["원두"] }]},
+  { id:"hall_fruit", tab:"hall", name:"과일 · 에이드", icon:"🍋", color:"#7A7A35",
+    sections:[{ name:"과일 · 에이드", items:["레몬","자몽","패션후르츠","자몽원액","생강청"] }]},
+  { id:"hall_frozen", tab:"hall", name:"냉동 · 디저트", icon:"🍓", color:"#5A3575",
     sections:[
       { name:"냉동과일", items:["냉동 블루베리","냉동딸기"] },
       { name:"아이스크림", items:["바닐라아이스크림","초코아이스크림"] },
       { name:"잼류", items:["딸기잼","블루베리잼"] }
-    ]
-  }
+    ]},
+  // ── 베이킹(쿠팡) ──
+  { id:"bake_fruit", tab:"baking", name:"과일류", icon:"🍓", color:"#C05A5A",
+    sections:[{ name:"과일류", items:["생크림","망고","블루베리","바나나","메론","키위","레몬","자몽"] }]},
+  { id:"bake_ingr", tab:"baking", name:"식재료", icon:"🫙", color:"#7A5A35",
+    sections:[{ name:"식재료", items:["파스타치오","카다이프","식용유","그릭요거트","통카빈","다진마늘","명란젓","와사비","맥심가루","뽀또과자"] }]},
+  { id:"bake_vanilla", tab:"baking", name:"바닐라", icon:"🍦", color:"#B07A30",
+    sections:[{ name:"바닐라", items:["바닐라빈","바닐라페이스트","바닐라에센스"] }]},
+  { id:"bake_choco", tab:"baking", name:"초콜릿 코팅", icon:"🍫", color:"#5C3D2E",
+    sections:[{ name:"초콜릿 코팅", items:["코팅다크","코팅화이트"] }]},
+  { id:"bake_supply", tab:"baking", name:"소모품", icon:"📦", color:"#5A6B7A",
+    sections:[{ name:"소모품", items:["니트릴장갑","고무장갑","수세미","주방세제","롤비닐","지퍼백","짤주머니","케잌띠지(6.5cm)","컵지","두쫀쿠포장용기"] }]},
 ];
 
 let cats = JSON.parse(JSON.stringify(DEFAULT_CATS));
@@ -267,8 +304,10 @@ let recentChanges = [];
 let notifEnabled = false;
 let isFirstLoad = true;
 let prevState = {};
+let currentTab = "hall";
 let currentCatId = null;
-let addingKey = null; // "catId-sectionIdx"
+let addingKey = null;
+let editMode = false;
 let undoStack = null;
 let undoTimer = null;
 
@@ -276,7 +315,7 @@ const CHECK_SVG = `<svg width="11" height="9" viewBox="0 0 13 10" fill="none"><p
 
 function todayStr(){const d=new Date();return `${d.getMonth()+1}/${d.getDate()}`;}
 function nowStr(){const d=new Date();return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;}
-function getKey(catId,si,item){return `${catId}__${si}__${item.replace(/[\s\/·]/g,'_')}`;}
+function getKey(catId,si,item){return `${catId}__${si}__${item.replace(/[\s\/·\(\)\.]/g,'_')}`;}
 
 function setSyncStatus(s){
   const dot=document.getElementById('syncDot'),txt=document.getElementById('syncText');
@@ -291,17 +330,13 @@ function scheduleSave(){
   saveTimer=setTimeout(()=>{
     setSyncStatus('syncing');
     setDoc(STATE_REF,{state,cats}).then(()=>setSyncStatus('online')).catch(console.error);
-  },400);
-}
-
-function saveRecentToFirebase(){
-  setDoc(RECENT_REF,{changes:recentChanges,readBy:{}}).catch(console.error);
+  },500);
 }
 
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500);
 }
 
 // ── Undo ──
@@ -310,18 +345,13 @@ function showUndo(msg,snapshot){
   undoStack=snapshot;
   document.getElementById('undoMsg').textContent=msg;
   document.getElementById('undoBar').classList.add('show');
-  undoTimer=setTimeout(()=>{
-    document.getElementById('undoBar').classList.remove('show');
-    undoStack=null;
-  },4000);
+  undoTimer=setTimeout(()=>{document.getElementById('undoBar').classList.remove('show');undoStack=null;},4000);
 }
 window.doUndo=function(){
   if(!undoStack)return;
   state=JSON.parse(JSON.stringify(undoStack));
-  scheduleSave();
-  renderAll();
-  document.getElementById('undoBar').classList.remove('show');
-  undoStack=null;
+  scheduleSave();renderAll();
+  document.getElementById('undoBar').classList.remove('show');undoStack=null;
   showToast('↩ 되돌렸어요');
 };
 
@@ -331,65 +361,52 @@ window.toggleNotif=function(){
     if('Notification' in window){
       Notification.requestPermission().then(p=>{
         if(p==='granted'){notifEnabled=true;showToast('🔔 알림 켜짐!');}
-        else showToast('설정에서 알림 권한을 허용해주세요');
+        else showToast('설정 > Safari > 알림 허용 필요');
       });
     } else showToast('이 브라우저는 알림 미지원');
-  } else {
-    notifEnabled=false;showToast('🔕 알림 꺼짐');
-  }
+  } else {notifEnabled=false;showToast('🔕 알림 꺼짐');}
 };
-
 function sendNotif(title,body){
-  if(notifEnabled&&Notification.permission==='granted'){
-    new Notification(title,{body,icon:'☕'});
-  }
+  if(notifEnabled&&Notification.permission==='granted') new Notification(title,{body,icon:'☕'});
   document.getElementById('notifBadge').classList.add('show');
 }
 
-// ── Recent changes ──
+// ── Recent ──
 window.toggleRecent=function(){
   const bar=document.getElementById('recentBar');
   bar.classList.toggle('show');
-  if(bar.classList.contains('show')) renderRecent();
+  if(bar.classList.contains('show'))renderRecent();
 };
 window.closeRecent=function(){
   document.getElementById('recentBar').classList.remove('show');
   document.getElementById('notifBadge').classList.remove('show');
-  recentChanges=[];
-  saveRecentToFirebase();
-  renderRecent();
+  recentChanges=[];renderRecent();
 };
-
 function addRecentChange(itemName,field,checked){
   const label=field==='need'?'발주요망':'발주완료';
-  const action=checked?'체크':'해제';
-  recentChanges.unshift({itemName,label,action,time:nowStr()});
+  recentChanges.unshift({itemName,label,action:checked?'체크':'해제',time:nowStr()});
   if(recentChanges.length>20)recentChanges.pop();
   document.getElementById('recentBar').classList.add('show');
   renderRecent();
-  const notifMsg=`${itemName} — ${label} ${action}됨`;
-  sendNotif('카페 발주 변경',notifMsg);
-  showToast(`${label==='발주요망'?'🔴':'🟢'} ${itemName} ${action}`);
-  saveRecentToFirebase();
+  sendNotif('카페 발주 변경',`${itemName} — ${label} ${checked?'체크':'해제'}됨`);
+  showToast(`${field==='need'?'🔴':'🟢'} ${itemName} ${checked?'체크':'해제'}`);
 }
-
 function renderRecent(){
   const list=document.getElementById('recentList');
   if(!recentChanges.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);padding:4px 0">변경사항 없음</div>';return;}
   list.innerHTML=recentChanges.slice(0,8).map(c=>`
-    <div class="recent-item" onclick="scrollToItemByName('${c.itemName.replace(/'/g,"\\'")}')">
+    <div class="recent-item" onclick="jumpToItem('${c.itemName.replace(/'/g,"\\'")}')">
       <div class="rdot" style="background:${c.label==='발주요망'?'var(--need)':'var(--done)'}"></div>
       <span><b>${c.itemName}</b> ${c.label} ${c.action}</span>
       <span style="margin-left:auto;color:var(--muted);font-size:10px">${c.time}</span>
     </div>`).join('');
 }
-
-window.scrollToItemByName=function(name){
-  // find which cat
+window.jumpToItem=function(name){
   for(const cat of cats){
     for(let si=0;si<cat.sections.length;si++){
       if(cat.sections[si].items.includes(name)){
         closeRecent();
+        currentTab=cat.tab;updateTabBar();
         openCat(cat.id);
         setTimeout(()=>{
           const els=document.querySelectorAll('.item-name');
@@ -401,127 +418,151 @@ window.scrollToItemByName=function(name){
               break;
             }
           }
-        },300);
-        return;
+        },300);return;
       }
     }
   }
 };
 
-// ── Navigation ──
-function goHome(){
-  currentCatId=null;addingKey=null;
-  document.getElementById('home-view').style.display='block';
-  document.getElementById('detail-view').style.display='none';
-  renderHome();
+// ── Tab ──
+window.switchTab=function(tab){
+  currentTab=tab;currentCatId=null;editMode=false;
+  showPage('home');updateTabBar();renderHome();
+  document.getElementById('backBtn').classList.remove('show');
+  document.getElementById('navTitle').textContent='☕ 카페 발주';
+};
+function updateTabBar(){
+  ['hall','baking','all'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===currentTab);
+  });
 }
-window.goHome=goHome;
 
+// ── Navigation ──
+window.goBack=function(){
+  currentCatId=null;editMode=false;addingKey=null;
+  showPage('home');renderHome();
+  document.getElementById('backBtn').classList.remove('show');
+  document.getElementById('navTitle').textContent='☕ 카페 발주';
+};
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+}
 function openCat(catId){
-  currentCatId=catId;addingKey=null;
-  document.getElementById('home-view').style.display='none';
-  document.getElementById('detail-view').style.display='block';
-  renderDetail();
+  currentCatId=catId;editMode=false;addingKey=null;
+  const cat=cats.find(c=>c.id===catId);
+  document.getElementById('navTitle').textContent=cat?`${cat.icon} ${cat.name}`:'';
+  document.getElementById('backBtn').classList.add('show');
+  showPage('detail');renderDetail();
 }
 window.openCat=openCat;
 
-// ── Stats helpers ──
+// ── Stats ──
 function getCatStats(cat){
   let need=0,done=0,total=0;
   cat.sections.forEach((sec,si)=>{
     sec.items.forEach(item=>{
       const k=getKey(cat.id,si,item);
       if(!state[k])state[k]={need:false,needDate:'',boss:false,bossDate:''};
-      if(state[k].need)need++;
-      if(state[k].boss)done++;
-      total++;
+      if(state[k].need)need++;if(state[k].boss)done++;total++;
     });
   });
+  return{need,done,total};
+}
+function getAllStats(){
+  let need=0,done=0,total=0;
+  cats.forEach(cat=>{const s=getCatStats(cat);need+=s.need;done+=s.done;total+=s.total;});
   return{need,done,total};
 }
 
 // ── Render home ──
 function renderHome(){
-  let totalNeed=0,totalDone=0,totalAll=0;
+  const{need,done,total}=getAllStats();
+  document.getElementById('needCount').textContent=need;
+  document.getElementById('doneCount').textContent=done;
+  document.getElementById('totalCount').textContent=total;
+
+  const filtered=currentTab==='all'?cats:cats.filter(c=>c.tab===currentTab);
+  document.getElementById('homeLabel').textContent=
+    currentTab==='hall'?'홀 카테고리':currentTab==='baking'?'베이킹 카테고리':'전체 카테고리';
+
   const grid=document.getElementById('catGrid');
   grid.innerHTML='';
-  cats.forEach(cat=>{
-    const{need,done,total}=getCatStats(cat);
-    totalNeed+=need;totalDone+=done;totalAll+=total;
+  filtered.forEach(cat=>{
+    const{need:n,done:d,total:t}=getCatStats(cat);
     const el=document.createElement('div');
-    el.className='cat-card';
-    el.onclick=()=>openCat(cat.id);
+    el.className='cat-card';el.onclick=()=>openCat(cat.id);
     el.innerHTML=`
       <div class="cat-icon">${cat.icon}</div>
       <div class="cat-info">
         <div class="cat-name">${cat.name}</div>
-        <div class="cat-sub">${total}개 항목</div>
-        ${need||done?`<div class="cat-badges">
-          ${need?`<span class="cat-badge need">🔴 발주요망 ${need}</span>`:''}
-          ${done?`<span class="cat-badge done">🟢 완료 ${done}</span>`:''}
+        <div class="cat-sub">${t}개 항목</div>
+        ${n||d?`<div class="cat-badges">
+          ${n?`<span class="cat-badge need">🔴 발주요망 ${n}</span>`:''}
+          ${d?`<span class="cat-badge done">🟢 완료 ${d}</span>`:''}
         </div>`:''}
       </div>
-      <div class="cat-chevron">›</div>
-    `;
+      <div class="chevron">›</div>`;
     grid.appendChild(el);
   });
-  document.getElementById('needCount').textContent=totalNeed;
-  document.getElementById('doneCount').textContent=totalDone;
-  document.getElementById('totalCount').textContent=totalAll;
 }
 
 // ── Render detail ──
 function renderDetail(){
-  const cat=cats.find(c=>c.id===currentCatId);
-  if(!cat)return;
-  let needAll=0,doneAll=0,totalAll=0;
+  const cat=cats.find(c=>c.id===currentCatId);if(!cat)return;
   const content=document.getElementById('detailContent');
-  content.innerHTML=`
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:0 2px;">
-      <span style="font-size:22px">${cat.icon}</span>
-      <span style="font-size:17px;font-weight:700">${cat.name}</span>
+  content.innerHTML='';
+  content.className=editMode?'edit-mode':'';
+
+  // header + edit toggle
+  const hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 2px;';
+  hdr.innerHTML=`
+    <div class="detail-header" style="margin-bottom:0">
+      <span class="detail-icon">${cat.icon}</span>
+      <span class="detail-name">${cat.name}</span>
     </div>
-    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--muted);">
-      <span><div class="ldot" style="background:var(--need);display:inline-block;border-radius:2px;width:9px;height:9px;margin-right:4px;"></div>발주요망(직원)</span>
-      <span><div class="ldot" style="background:var(--done);display:inline-block;border-radius:2px;width:9px;height:9px;margin-right:4px;"></div>발주완료(사장님)</span>
-    </div>
-  `;
+    <button class="edit-toggle" onclick="toggleEdit()">${editMode?'완료':'편집'}</button>`;
+  content.appendChild(hdr);
+
+  const leg=document.createElement('div');
+  leg.className='legend';
+  leg.innerHTML=`<span><div class="ldot" style="background:var(--need)"></div>발주요망(직원)</span><span><div class="ldot" style="background:var(--done)"></div>발주완료(사장님)</span>`;
+  content.appendChild(leg);
 
   cat.sections.forEach((sec,si)=>{
     let needC=0,doneC=0;
     sec.items.forEach(item=>{
       const k=getKey(cat.id,si,item);
       if(!state[k])state[k]={need:false,needDate:'',boss:false,bossDate:''};
-      if(state[k].need)needC++;
-      if(state[k].boss)doneC++;
+      if(state[k].need)needC++;if(state[k].boss)doneC++;
     });
-    needAll+=needC;doneAll+=doneC;totalAll+=sec.items.length;
 
-    const secEl=document.createElement('div');
-    secEl.className='section';
+    const secEl=document.createElement('div');secEl.className='section';
     secEl.innerHTML=`
       <div class="section-header">
-        <div class="section-title"><div class="sdot" style="background:${cat.color}"></div><div class="section-name">${sec.name}</div></div>
-        <div class="section-count">발주요망 ${needC} · 완료 ${doneC}</div>
+        <div class="sec-title"><div class="sdot" style="background:${cat.color}"></div><div class="sec-name">${sec.name}</div></div>
+        <div class="sec-count">발주요망 ${needC} · 완료 ${doneC}</div>
       </div>
       <div class="col-header">
         <div></div>
         <div class="col-label nl">🔴 발주요망<br><span style="font-weight:400;font-size:9px">직원 체크</span></div>
         <div class="col-label dl">🟢 발주완료<br><span style="font-weight:400;font-size:9px">사장님 체크</span></div>
       </div>
-      <div class="card" id="card-${cat.id}-${si}"></div>
-    `;
+      <div class="card ${editMode?'edit-mode':''}" id="card-${cat.id}-${si}"></div>`;
     content.appendChild(secEl);
 
     const card=document.getElementById(`card-${cat.id}-${si}`);
-    sec.items.forEach(item=>{
+    sec.items.forEach((item,ii)=>{
       const k=getKey(cat.id,si,item);
-      const s=state[k];
-      const fullyDone=s.need&&s.boss;
+      const s=state[k];const fullyDone=s.need&&s.boss;
       const el=document.createElement('div');
       el.className='item'+(fullyDone?' fully-done':'');
       el.innerHTML=`
-        <div class="item-name">${item}</div>
+        <div class="item-left">
+          <button class="del-btn" onclick="deleteItem('${cat.id}',${si},${ii})" title="삭제">✕</button>
+          <div class="item-name">${item}</div>
+        </div>
         <div class="dcell need ${s.need?'active':''}" data-key="${k}" data-field="need">
           <div class="dchk">${CHECK_SVG}</div>
           <div class="dtag ${s.needDate?'':'empty'}" data-key="${k}" data-df="needDate">${s.needDate||'날짜'}</div>
@@ -529,26 +570,24 @@ function renderDetail(){
         <div class="dcell boss ${s.boss?'active':''}" data-key="${k}" data-field="boss">
           <div class="dchk">${CHECK_SVG}</div>
           <div class="dtag ${s.bossDate?'':'empty'}" data-key="${k}" data-df="bossDate">${s.bossDate||'날짜'}</div>
-        </div>
-      `;
+        </div>`;
       el.querySelectorAll('.dcell').forEach(cell=>{
         cell.addEventListener('click',e=>{
+          if(editMode)return;
           if(e.target.classList.contains('dtag')&&!e.target.classList.contains('empty'))return;
           const snapshot=JSON.parse(JSON.stringify(state));
           const k2=cell.dataset.key,f=cell.dataset.field;
           if(!state[k2])state[k2]={need:false,needDate:'',boss:false,bossDate:''};
           const newVal=!state[k2][f];
-          state[k2][f]=newVal;
-          state[k2][f+'Date']=newVal?todayStr():'';
+          state[k2][f]=newVal;state[k2][f+'Date']=newVal?todayStr():'';
           scheduleSave();
-          const itemN=item;
-          showUndo(`${itemN} ${f==='need'?'발주요망':'발주완료'} ${newVal?'체크':'해제'}`,snapshot);
-          renderDetail();
-          renderHome();
+          showUndo(`${item} ${f==='need'?'발주요망':'발주완료'} ${newVal?'체크':'해제'}`,snapshot);
+          renderDetail();renderHome();
         });
       });
       el.querySelectorAll('.dtag:not(.empty)').forEach(tag=>{
         tag.addEventListener('click',e=>{
+          if(editMode)return;
           e.stopPropagation();
           const cur=state[tag.dataset.key]?.[tag.dataset.df]||'';
           const val=prompt('날짜 입력 (예: 6/15)',cur);
@@ -560,29 +599,36 @@ function renderDetail(){
       card.appendChild(el);
     });
 
-    // Add item
+    // add/input row
     const addKey=`${cat.id}-${si}`;
+    const footer=document.createElement('div');footer.className='card-footer';
     if(addingKey===addKey){
-      const row=document.createElement('div');
-      row.className='add-row';
-      row.innerHTML=`<input id="add-in-${addKey}" class="add-input" type="text" placeholder="항목 이름..."><button class="add-cancel" onclick="window._cancelAdd()">취소</button><button class="add-ok" onclick="window._confirmAdd('${cat.id}',${si})">추가</button>`;
-      row.querySelector('input').addEventListener('keydown',e=>{if(e.key==='Enter')window._confirmAdd(cat.id,si);});
-      card.appendChild(row);
-      setTimeout(()=>document.getElementById(`add-in-${addKey}`)?.focus(),80);
+      footer.innerHTML=`<div class="add-input-row"><input id="add-in-${addKey}" class="add-input" type="text" placeholder="항목 이름..."><button class="add-cancel" onclick="window._cancelAdd()">취소</button><button class="add-ok" onclick="window._confirmAdd('${cat.id}',${si})">추가</button></div>`;
+      footer.querySelector('input').addEventListener('keydown',e=>{if(e.key==='Enter')window._confirmAdd(cat.id,si);});
     } else {
-      const btn=document.createElement('div');
-      btn.className='add-btn';
-      btn.innerHTML=`<span class="plus">＋</span>항목 추가`;
-      btn.onclick=()=>{addingKey=addKey;renderDetail();};
-      card.appendChild(btn);
+      footer.innerHTML=`<div class="add-btn-row"><span class="plus">＋</span>항목 추가</div>`;
+      footer.querySelector('.add-btn-row').onclick=()=>{addingKey=addKey;renderDetail();setTimeout(()=>document.getElementById(`add-in-${addKey}`)?.focus(),80);};
     }
+    card.appendChild(footer);
   });
 
-  // update top counts
-  document.getElementById('needCount').textContent=needAll;
-  document.getElementById('doneCount').textContent=doneAll;
-  document.getElementById('totalCount').textContent=totalAll;
+  // update counts
+  const{need,done,total}=getAllStats();
+  document.getElementById('needCount').textContent=need;
+  document.getElementById('doneCount').textContent=done;
+  document.getElementById('totalCount').textContent=total;
 }
+
+window.toggleEdit=function(){editMode=!editMode;addingKey=null;renderDetail();};
+
+window.deleteItem=function(catId,si,ii){
+  const cat=cats.find(c=>c.id===catId);if(!cat)return;
+  const item=cat.sections[si].items[ii];
+  if(!confirm(`"${item}" 항목을 삭제할까요?`))return;
+  cat.sections[si].items.splice(ii,1);
+  scheduleSave();renderDetail();renderHome();
+  showToast(`🗑 "${item}" 삭제됨`);
+};
 
 window._cancelAdd=function(){addingKey=null;renderDetail();};
 window._confirmAdd=function(catId,si){
@@ -593,29 +639,18 @@ window._confirmAdd=function(catId,si){
   const cat=cats.find(c=>c.id===catId);
   if(cat.sections[si].items.includes(name)){showToast('이미 있는 항목이에요');return;}
   cat.sections[si].items.push(name);
-  addingKey=null;
-  scheduleSave();
-  renderDetail();
+  addingKey=null;scheduleSave();renderDetail();renderHome();
   showToast(`✅ "${name}" 추가됐어요!`);
 };
 
 window.resetAll=function(){
   if(!confirm('전체 초기화할까요?\n모든 체크가 사라져요.'))return;
   const snapshot=JSON.parse(JSON.stringify(state));
-  state={};
-  scheduleSave();
-  renderAll();
+  state={};scheduleSave();renderAll();
   showUndo('전체 초기화됨',snapshot);
 };
 
-function renderAll(){
-  if(currentCatId)renderDetail();
-  else renderHome();
-}
-
-// ── Date ──
-const now=new Date();
-document.getElementById('dateDisplay').textContent=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+function renderAll(){if(currentCatId)renderDetail();else renderHome();}
 
 // ── Firestore ──
 onSnapshot(STATE_REF,(snap)=>{
@@ -625,42 +660,30 @@ onSnapshot(STATE_REF,(snap)=>{
     const data=snap.data();
     const newState=data.state||{};
     const newCats=data.cats||cats;
-
     if(!isFirstLoad){
       Object.entries(newState).forEach(([k,val])=>{
         const prev=prevState[k]||{};
         ['need','boss'].forEach(f=>{
           if(val[f]!==prev[f]){
-            // find item name from key
             let itemName=k.split('__')[2]?.replace(/_/g,' ')||k;
-            cats.forEach(cat=>{
-              cat.sections.forEach((sec,si)=>{
-                sec.items.forEach(it=>{if(getKey(cat.id,si,it)===k)itemName=it;});
-              });
-            });
+            cats.forEach(cat=>cat.sections.forEach((sec,si)=>sec.items.forEach(it=>{if(getKey(cat.id,si,it)===k)itemName=it;})));
             addRecentChange(itemName,f,val[f]);
           }
         });
       });
     }
-
     prevState=JSON.parse(JSON.stringify(newState));
-    state=newState;
-    cats=newCats;
-    isFirstLoad=false;
-  } else {
-    isFirstLoad=false;
-  }
+    state=newState;cats=newCats;isFirstLoad=false;
+  } else {isFirstLoad=false;}
   renderAll();
 },(err)=>{
   document.getElementById('loading').style.display='none';
-  setSyncStatus('offline');
-  isFirstLoad=false;
-  renderAll();
+  setSyncStatus('offline');isFirstLoad=false;renderAll();
 });
 
-// Init
-goHome();
+const now=new Date();
+document.getElementById('navTitle').textContent='☕ 카페 발주';
+switchTab('hall');
 </script>
 </body>
 </html>

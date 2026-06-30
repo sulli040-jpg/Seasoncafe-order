@@ -33,10 +33,27 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
 
 /* chips */
 .chips-bar{padding:6px 14px 10px;display:flex;gap:6px;flex-wrap:wrap;}
-.chip{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:500;color:var(--muted);display:flex;gap:4px;}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:500;color:var(--muted);display:flex;gap:4px;cursor:pointer;transition:all .15s;}
 .chip span{font-weight:700;color:var(--primary);}
 .chip.need span{color:var(--need);}
 .chip.done span{color:var(--done);}
+.chip.need.active-filter{background:var(--need);border-color:var(--need);}
+.chip.need.active-filter span,.chip.need.active-filter{color:#fff;}
+.chip.done.active-filter{background:var(--done);border-color:var(--done);}
+.chip.done.active-filter span,.chip.done.active-filter{color:#fff;}
+
+/* filter page */
+.filter-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;}
+.filter-section{margin-bottom:16px;}
+.filter-cat-name{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;padding:0 2px;display:flex;align-items:center;gap:6px;}
+.filter-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--border);font-size:13px;font-weight:500;}
+.filter-item:first-child{border-radius:12px 12px 0 0;}
+.filter-item:last-child{border-radius:0 0 12px 12px;border-bottom:none;}
+.filter-item:first-child:last-child{border-radius:12px;}
+.filter-item-card{border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:4px;}
+.filter-date{font-size:11px;font-weight:600;border-radius:4px;padding:2px 7px;}
+.filter-date.need{background:var(--need-light);color:var(--need);border:1px solid var(--need-border);}
+.filter-date.done{background:var(--done-light);color:var(--done);border:1px solid var(--done-border);}
 
 /* sync */
 .sync-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;background:var(--card);border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);}
@@ -176,9 +193,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
     </div>
   </div>
   <div class="chips-bar">
-    <div class="chip need">발주요망 <span id="needCount">0</span></div>
-    <div class="chip done">발주완료 <span id="doneCount">0</span></div>
-    <div class="chip">전체 <span id="totalCount">0</span></div>
+    <div class="chip need" id="chipNeed" onclick="toggleFilter('need')">🔴 발주요망 <span id="needCount">0</span></div>
+    <div class="chip done" id="chipDone" onclick="toggleFilter('done')">🟢 발주완료 <span id="doneCount">0</span></div>
+    <div class="chip" id="chipAll" onclick="toggleFilter(null)">전체 <span id="totalCount">0</span></div>
   </div>
 </div>
 
@@ -207,6 +224,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
 
 <div id="page-detail" class="page">
   <div id="detailContent"></div>
+</div>
+
+<div id="page-filter" class="page">
+  <div id="filterContent"></div>
 </div>
 
 <!-- BOTTOM TAB BAR -->
@@ -310,6 +331,7 @@ let addingKey = null;
 let editMode = false;
 let undoStack = null;
 let undoTimer = null;
+let activeFilter = null; // null | "need" | "done"
 
 const CHECK_SVG = `<svg width="11" height="9" viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -440,6 +462,9 @@ function updateTabBar(){
 // ── Navigation ──
 window.goBack=function(){
   currentCatId=null;editMode=false;addingKey=null;
+  activeFilter=null;
+  document.getElementById('chipNeed').classList.remove('active-filter');
+  document.getElementById('chipDone').classList.remove('active-filter');
   showPage('home');renderHome();
   document.getElementById('backBtn').classList.remove('show');
   document.getElementById('navTitle').textContent='☕ 카페 발주';
@@ -650,7 +675,80 @@ window.resetAll=function(){
   showUndo('전체 초기화됨',snapshot);
 };
 
-function renderAll(){if(currentCatId)renderDetail();else renderHome();}
+
+// ── Filter view ──
+window.toggleFilter=function(type){
+  if(activeFilter===type){
+    activeFilter=null;
+    document.getElementById('chipNeed').classList.remove('active-filter');
+    document.getElementById('chipDone').classList.remove('active-filter');
+    showPage('home');renderHome();
+    document.getElementById('backBtn').classList.remove('show');
+    document.getElementById('navTitle').textContent='☕ 카페 발주';
+    return;
+  }
+  activeFilter=type;
+  document.getElementById('chipNeed').classList.toggle('active-filter', type==='need');
+  document.getElementById('chipDone').classList.toggle('active-filter', type==='done');
+  if(type===null){
+    showPage('home');renderHome();
+    document.getElementById('backBtn').classList.remove('show');
+    document.getElementById('navTitle').textContent='☕ 카페 발주';
+    return;
+  }
+  currentCatId=null;editMode=false;
+  const label=type==='need'?'🔴 발주요망':'🟢 발주완료';
+  document.getElementById('navTitle').textContent=label;
+  document.getElementById('backBtn').classList.add('show');
+  showPage('filter');
+  renderFilter();
+};
+
+function renderFilter(){
+  const content=document.getElementById('filterContent');
+  content.innerHTML='';
+  const field=activeFilter;
+  let found=false;
+
+  cats.forEach(cat=>{
+    const matchItems=[];
+    cat.sections.forEach((sec,si)=>{
+      sec.items.forEach(item=>{
+        const k=getKey(cat.id,si,item);
+        if(!state[k])state[k]={need:false,needDate:'',boss:false,bossDate:''};
+        if(state[k][field]){
+          matchItems.push({item,k,sec,si,date:state[k][field+'Date']});
+        }
+      });
+    });
+    if(matchItems.length===0)return;
+    found=true;
+
+    const sec=document.createElement('div');
+    sec.className='filter-section';
+    sec.innerHTML=`<div class="filter-cat-name"><span>${cat.icon}</span>${cat.name}</div>`;
+    const card=document.createElement('div');
+    card.className='filter-item-card';
+    matchItems.forEach(({item,k,date})=>{
+      const row=document.createElement('div');
+      row.className='filter-item';
+      row.innerHTML=`
+        <span>${item}</span>
+        ${date?`<span class="filter-date ${field}">${date}</span>`:''}
+      `;
+      row.onclick=()=>jumpToItem(item);
+      card.appendChild(row);
+    });
+    sec.appendChild(card);
+    content.appendChild(sec);
+  });
+
+  if(!found){
+    content.innerHTML=`<div class="filter-empty">${activeFilter==='need'?'🔴 발주요망':'🟢 발주완료'} 항목이 없어요</div>`;
+  }
+}
+
+function renderAll(){if(activeFilter&&activeFilter!==null&&document.getElementById("page-filter").classList.contains("active"))renderFilter();else if(currentCatId)renderDetail();else renderHome();}
 
 // ── Firestore ──
 onSnapshot(STATE_REF,(snap)=>{

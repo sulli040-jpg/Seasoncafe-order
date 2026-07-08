@@ -351,7 +351,7 @@ function scheduleSave(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{
     setSyncStatus('syncing');
-    setDoc(STATE_REF,{state,cats}).then(()=>setSyncStatus('online')).catch(console.error);
+    setDoc(STATE_REF,{state}).then(()=>setSyncStatus('online')).catch(console.error);
   },500);
 }
 
@@ -759,7 +759,8 @@ onSnapshot(STATE_REF,(snap)=>{
   if(snap.exists()){
     const data=snap.data();
     const newState=data.state||{};
-    const newCats=data.cats||cats;
+    // Always use DEFAULT_CATS structure - only restore check state from Firebase
+    const newCats=cats;
     if(!isFirstLoad){
       Object.entries(newState).forEach(([k,val])=>{
         const prev=prevState[k]||{};
@@ -773,7 +774,9 @@ onSnapshot(STATE_REF,(snap)=>{
       });
     }
     prevState=JSON.parse(JSON.stringify(newState));
-    state=newState;cats=newCats;isFirstLoad=false;
+    state=newState;
+    // Don't overwrite cats with Firebase data - keep DEFAULT_CATS structure
+    isFirstLoad=false;
   } else {isFirstLoad=false;}
   renderAll();
 },(err)=>{

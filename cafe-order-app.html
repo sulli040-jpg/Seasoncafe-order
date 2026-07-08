@@ -266,7 +266,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const STATE_REF = doc(db,"checklist","mainV2");
+const STATE_REF = doc(db,"checklist","main");
 
 const DEFAULT_CATS = [
   // ── 홀 ──
@@ -716,8 +716,10 @@ function renderFilter(){
       sec.items.forEach(item=>{
         const k=getKey(cat.id,si,item);
         if(!state[k])state[k]={need:false,needDate:'',boss:false,bossDate:''};
-        if(state[k][field]){
-          matchItems.push({item,k,sec,si,date:state[k][field+'Date']});
+        const s=state[k];
+        const show = field==="need" ? (s.need && !s.boss) : (s.boss && !s.need);
+        if(show){
+          matchItems.push({item,k,sec,si,date:s[field+'Date']});
         }
       });
     });

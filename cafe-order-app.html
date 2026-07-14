@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="카페발주">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FFB6C8'/><text y='.9em' font-size='80' x='10'>🐷</text></svg>">
 <title>카페 발주</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
@@ -176,6 +177,81 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
 .spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading p{font-size:14px;color:var(--muted);}
+
+/* ── THEMES ── */
+
+body.theme-pig{
+  --bg:#FFF0F5;--card:#fff;--primary:#3D1A28;--accent:#E87FA0;
+  --muted:#C4929F;--border:#F9D0DF;
+  --need:#E84875;--need-light:#FFF0F5;--need-border:#F9B0C8;
+  --done:#E87FA0;--done-light:#FFF0F5;--done-border:#F4B8CB;
+  --complete:#FFF5F8;
+}
+body.theme-pig .topnav{background:rgba(255,240,245,.97);}
+body.theme-pig .tabbar{background:rgba(255,240,245,.97);}
+
+body.theme-pigdark{
+  --bg:#2A1020;--card:#3A1830;--primary:#FFD6E8;--accent:#F4A7B9;
+  --muted:#A07080;--border:#5A2840;
+  --need:#FF6B9D;--need-light:#3A1030;--need-border:#6B2040;
+  --done:#F4A7B9;--done-light:#2A1828;--done-border:#6B3050;
+  --complete:#2A1828;
+}
+body.theme-pigdark .topnav{background:rgba(42,16,32,.97);}
+body.theme-pigdark .tabbar{background:rgba(42,16,32,.97);}
+body.theme-pigdark .loading{background:#2A1020;}
+
+body.theme-dark{
+  --bg:#1C1C1E;--card:#2C2C2E;--primary:#F5F5F5;--accent:#E8956B;
+  --muted:#8E8E93;--border:#3A3A3C;
+  --need:#FF6B6B;--need-light:#3A1A1A;--need-border:#6B2A2A;
+  --done:#5AC8A0;--done-light:#1A3A2A;--done-border:#2A6B4A;
+  --complete:#1A2E26;
+}
+body.theme-pastel{
+  --bg:#FFF5F8;--card:#fff;--primary:#3D2C35;--accent:#E8829A;
+  --muted:#B8909A;--border:#F0D5DC;
+  --need:#E8829A;--need-light:#FFF0F3;--need-border:#F5C0CC;
+  --done:#82C4B8;--done-light:#EEF8F5;--done-border:#B0DDD6;
+  --complete:#EEF8F5;
+}
+body.theme-mono{
+  --bg:#F5F5F5;--card:#fff;--primary:#1A1A1A;--accent:#444;
+  --muted:#888;--border:#DDD;
+  --need:#333;--need-light:#F0F0F0;--need-border:#BBB;
+  --done:#555;--done-light:#EBEBEB;--done-border:#CCC;
+  --complete:#EBEBEB;
+}
+body.theme-green{
+  --bg:#F0F7F2;--card:#fff;--primary:#1A3A2A;--accent:#2E7D52;
+  --muted:#6A9A7A;--border:#C8E0D0;
+  --need:#D94F4F;--need-light:#FFF0F0;--need-border:#F0BEBE;
+  --done:#2E7D52;--done-light:#E8F5EE;--done-border:#9ACFB2;
+  --complete:#E8F5EE;
+}
+
+/* ── SETTINGS PAGE ── */
+.settings-section{margin-bottom:20px;}
+.settings-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;padding:0 4px;letter-spacing:.04em;}
+.settings-card{background:var(--card);border-radius:14px;border:1px solid var(--border);overflow:hidden;}
+.settings-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row:active{background:var(--bg);}
+.settings-icon{font-size:18px;width:24px;text-align:center;}
+.settings-text{flex:1;font-size:14px;font-weight:500;}
+.settings-chevron{color:var(--border);font-size:18px;}
+
+/* theme grid */
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.theme-option{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:12px;cursor:pointer;transition:all .15s;position:relative;}
+.theme-option.active{border-color:var(--accent);}
+.theme-option:active{opacity:.8;}
+.theme-check{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;color:#fff;font-size:12px;}
+.theme-option.active .theme-check{display:flex;}
+.theme-preview{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;}
+.theme-preview-bar{height:10px;border-radius:4px;}
+.theme-name{font-size:12px;font-weight:700;text-align:center;}
+.theme-sub{font-size:10px;color:var(--muted);text-align:center;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -190,6 +266,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
     <div class="nav-right">
       <button class="icon-btn" onclick="toggleNotif()" id="notifBtn" title="알림">🔔<div class="badge" id="notifBadge"></div></button>
       <button class="icon-btn" onclick="toggleRecent()" title="최근변경">📋</button>
+      <button class="icon-btn" onclick="openSettings()" title="설정">⚙️</button>
     </div>
   </div>
   <div class="chips-bar">
@@ -228,6 +305,45 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
 
 <div id="page-filter" class="page">
   <div id="filterContent"></div>
+</div>
+
+<div id="page-settings" class="page">
+  <div class="settings-section">
+    <div class="settings-label">디스플레이</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="openThemes()">
+        <div class="settings-icon">🎨</div>
+        <div class="settings-text">테마 변경</div>
+        <div class="settings-chevron">›</div>
+      </div>
+    </div>
+  </div>
+  <div class="settings-section">
+    <div class="settings-label">데이터</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="resetAll()">
+        <div class="settings-icon">🗑</div>
+        <div class="settings-text" style="color:var(--need)">전체 초기화</div>
+        <div class="settings-chevron">›</div>
+      </div>
+    </div>
+  </div>
+  <div class="settings-section">
+    <div class="settings-label">알림</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="toggleNotif()">
+        <div class="settings-icon">🔔</div>
+        <div class="settings-text">알림 설정</div>
+        <div class="settings-chevron" id="notifStatus">끔</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:30px;font-size:11px;color:var(--muted);">☕ 카페 발주 앱</div>
+</div>
+
+<div id="page-themes" class="page">
+  <div class="settings-label" style="margin-bottom:12px">테마를 선택하세요</div>
+  <div class="theme-grid" id="themeGrid"></div>
 </div>
 
 <!-- BOTTOM TAB BAR -->
@@ -351,7 +467,7 @@ function scheduleSave(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{
     setSyncStatus('syncing');
-    setDoc(STATE_REF,{state}).then(()=>setSyncStatus('online')).catch(console.error);
+    setDoc(STATE_REF,{state,cats}).then(()=>setSyncStatus('online')).catch(console.error);
   },500);
 }
 
@@ -717,7 +833,7 @@ function renderFilter(){
         const k=getKey(cat.id,si,item);
         if(!state[k])state[k]={need:false,needDate:'',boss:false,bossDate:''};
         const s=state[k];
-        const show = field==="need" ? (s.need && !s.boss) : (s.boss && !s.need);
+        const show = field==="need" ? (s.need && !s.boss) : (s.boss);
         if(show){
           matchItems.push({item,k,sec,si,date:s[field+'Date']});
         }
@@ -759,8 +875,25 @@ onSnapshot(STATE_REF,(snap)=>{
   if(snap.exists()){
     const data=snap.data();
     const newState=data.state||{};
-    // Always use DEFAULT_CATS structure - only restore check state from Firebase
-    const newCats=cats;
+    // Merge: start from DEFAULT_CATS, then add any user-added items from Firebase
+    const savedCats=data.cats||[];
+    const newCats=JSON.parse(JSON.stringify(DEFAULT_CATS));
+    if(savedCats.length>0){
+      newCats.forEach(defCat=>{
+        const savedCat=savedCats.find(c=>c.id===defCat.id);
+        if(savedCat){
+          defCat.sections.forEach((defSec,si)=>{
+            const savedSec=savedCat.sections&&savedCat.sections[si];
+            if(savedSec&&savedSec.items){
+              // Add user-added items not in default
+              savedSec.items.forEach(item=>{
+                if(!defSec.items.includes(item)) defSec.items.push(item);
+              });
+            }
+          });
+        }
+      });
+    }
     if(!isFirstLoad){
       Object.entries(newState).forEach(([k,val])=>{
         const prev=prevState[k]||{};
@@ -774,15 +907,78 @@ onSnapshot(STATE_REF,(snap)=>{
       });
     }
     prevState=JSON.parse(JSON.stringify(newState));
-    state=newState;
-    // Don't overwrite cats with Firebase data - keep DEFAULT_CATS structure
-    isFirstLoad=false;
+    state=newState;cats=newCats;isFirstLoad=false;
   } else {isFirstLoad=false;}
   renderAll();
 },(err)=>{
   document.getElementById('loading').style.display='none';
   setSyncStatus('offline');isFirstLoad=false;renderAll();
 });
+
+
+// ── Settings ──
+window.openSettings=function(){
+  currentCatId=null;editMode=false;addingKey=null;activeFilter=null;
+  document.getElementById('chipNeed').classList.remove('active-filter');
+  document.getElementById('chipDone').classList.remove('active-filter');
+  document.getElementById('navTitle').textContent='설정';
+  document.getElementById('backBtn').classList.add('show');
+  showPage('settings');
+};
+
+window.openThemes=function(){
+  document.getElementById('navTitle').textContent='테마 변경';
+  showPage('themes');
+  renderThemes();
+};
+
+const THEMES = [
+  { id:'default', name:'기본☕', sub:'카페 감성', colors:['#C07B4A','#E5DDD5','#3B6B5A'] },
+  { id:'pig',     name:'🐷 피기', sub:'우리 카페 컨셉!', colors:['#F4A7B9','#FFE4EE','#E87FA0'] },
+  { id:'pigdark', name:'🐷 다크피기', sub:'돼지도 야식 먹어요', colors:['#E87FA0','#3A2030','#F4A7B9'] },
+  { id:'pastel',  name:'파스텔', sub:'사랑스러워요', colors:['#E8829A','#F0D5DC','#82C4B8'] },
+  { id:'dark',    name:'다크', sub:'눈이 편해요', colors:['#E8956B','#3A3A3C','#5AC8A0'] },
+  { id:'mono',    name:'모노', sub:'심플하게', colors:['#444','#DDD','#555'] },
+];
+
+let currentTheme = localStorage.getItem('cafe-theme') || 'default';
+
+function applyTheme(id){
+  document.body.className = id==='default' ? '' : 'theme-'+id;
+  currentTheme=id;
+  localStorage.setItem('cafe-theme',id);
+  // Update title emoji
+  const isPig = id==='pig'||id==='pigdark';
+  document.querySelectorAll('.nav-title, #navTitle').forEach(el=>{
+    if(el.textContent.includes('카페 발주')) el.textContent=(isPig?'🐷':'☕')+' 카페 발주';
+  });
+  // Update tab icons
+  const hallTab=document.querySelector('#tab-hall .tab-icon');
+  if(hallTab) hallTab.textContent=isPig?'🐷':'🏠';
+}
+
+function renderThemes(){
+  const grid=document.getElementById('themeGrid');
+  grid.innerHTML='';
+  THEMES.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='theme-option'+(currentTheme===t.id?' active':'');
+    el.innerHTML=`
+      <div class="theme-check">✓</div>
+      <div class="theme-preview">
+        <div class="theme-preview-bar" style="background:${t.colors[0]}"></div>
+        <div class="theme-preview-bar" style="background:${t.colors[1]}"></div>
+        <div class="theme-preview-bar" style="background:${t.colors[2]}"></div>
+      </div>
+      <div class="theme-name">${t.name}</div>
+      <div class="theme-sub">${t.sub}</div>`;
+    el.onclick=()=>{applyTheme(t.id);renderThemes();showToast('테마가 바뀌었어요!');};
+    grid.appendChild(el);
+  });
+}
+
+// Apply saved theme on load
+applyTheme(currentTheme);
 
 const now=new Date();
 document.getElementById('navTitle').textContent='☕ 카페 발주';

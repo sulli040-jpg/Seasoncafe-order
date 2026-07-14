@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FFB6C8'/><text y='.9em' font-size='80' x='10'>🐷</text></svg>">
 <title>카페 발주</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Jua&family=Gaegu:wght@400;700&family=Cute+Font&display=swap');
 :root{
   --bg:#F7F5F0;--card:#fff;--primary:#2C2C2C;--accent:#C07B4A;
   --muted:#9A8F85;--border:#E5DDD5;
@@ -178,7 +178,160 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--prim
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading p{font-size:14px;color:var(--muted);}
 
+
+/* ── FONTS PER THEME ── */
+body { font-family: 'Noto Sans KR', sans-serif; }
+body.theme-pig,
+body.theme-pigglass { font-family: 'Jua', 'Noto Sans KR', sans-serif; }
+body.theme-dark { font-family: 'Noto Sans KR', sans-serif; }
+body.theme-pastel { font-family: 'Gaegu', 'Noto Sans KR', sans-serif; }
+body.theme-glass { font-family: 'Noto Sans KR', sans-serif; }
+body.theme-pigdark { font-family: 'Jua', 'Noto Sans KR', sans-serif; }
+body.theme-mono { font-family: 'Noto Sans KR', sans-serif; }
+
 /* ── THEMES ── */
+
+body.theme-glass{
+  --bg:linear-gradient(145deg, #E8D5F5 0%, #D5E8F5 50%, #F5D5E8 100%);
+  --card:rgba(255,255,255,0.55);
+  --primary:#2C1F3D;--accent:#9B6EC8;
+  --muted:#8B7BA0;--border:rgba(255,255,255,0.6);
+  --need:#D94F7A;--need-light:rgba(255,220,230,0.6);--need-border:rgba(220,150,170,0.5);
+  --done:#5B8FC8;--done-light:rgba(200,225,255,0.6);--done-border:rgba(130,180,230,0.5);
+  --complete:rgba(200,225,255,0.3);
+}
+body.theme-glass{
+  background: linear-gradient(145deg, #E8D5F5 0%, #D5E8F5 50%, #F5D5E8 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+body.theme-glass .topnav{
+  background:rgba(255,255,255,0.4);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 2px 20px rgba(150,120,200,0.08);
+}
+body.theme-glass .tabbar{
+  background:rgba(255,255,255,0.4);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.6);
+}
+body.theme-glass .card,
+body.theme-glass .cat-card,
+body.theme-glass .settings-card,
+body.theme-glass .filter-item-card{
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.7);
+  box-shadow:0 4px 24px rgba(150,120,200,0.08);
+}
+body.theme-glass .sync-bar{
+  background:rgba(255,255,255,0.35);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.5);
+}
+body.theme-glass .recent-bar{
+  background:rgba(255,245,255,0.7);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+body.theme-glass .chip{
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.8);
+}
+body.theme-glass .item{
+  border-bottom:1px solid rgba(255,255,255,0.4);
+}
+body.theme-glass .cat-card:active{background:rgba(255,255,255,0.75);}
+body.theme-glass .add-btn-row{background:rgba(255,255,255,0.3);}
+body.theme-glass .loading{
+  background:linear-gradient(145deg,#E8D5F5,#D5E8F5,#F5D5E8);
+}
+body.theme-glass .toast,
+body.theme-glass .undo-bar{
+  background:rgba(44,31,61,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+body.theme-glass .theme-option{
+  background:rgba(255,255,255,0.5);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+/* pig glass */
+body.theme-pigglass{
+  --bg:linear-gradient(145deg,#FFD6E8 0%,#FFE8F5 50%,#FFC8DC 100%);
+  --card:rgba(255,255,255,0.55);
+  --primary:#3D1A28;--accent:#E8679A;
+  --muted:#C4909F;--border:rgba(255,255,255,0.65);
+  --need:#E8679A;--need-light:rgba(255,220,235,0.6);--need-border:rgba(230,160,185,0.5);
+  --done:#C87AAE;--done-light:rgba(240,210,235,0.6);--done-border:rgba(200,150,185,0.5);
+  --complete:rgba(255,220,235,0.3);
+}
+body.theme-pigglass{
+  background:linear-gradient(145deg,#FFD6E8 0%,#FFE8F5 50%,#FFC8DC 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+}
+body.theme-pigglass .topnav{
+  background:rgba(255,255,255,0.4);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.65);
+  box-shadow:0 2px 20px rgba(230,100,150,0.08);
+}
+body.theme-pigglass .tabbar{
+  background:rgba(255,255,255,0.4);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.65);
+}
+body.theme-pigglass .card,
+body.theme-pigglass .cat-card,
+body.theme-pigglass .settings-card,
+body.theme-pigglass .filter-item-card{
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.75);
+  box-shadow:0 4px 24px rgba(230,100,150,0.08);
+}
+body.theme-pigglass .sync-bar{
+  background:rgba(255,255,255,0.35);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.5);
+}
+body.theme-pigglass .recent-bar{
+  background:rgba(255,240,248,0.7);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+body.theme-pigglass .chip{
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.8);
+}
+body.theme-pigglass .item{border-bottom:1px solid rgba(255,255,255,0.4);}
+body.theme-pigglass .add-btn-row{background:rgba(255,255,255,0.3);}
+body.theme-pigglass .loading{
+  background:linear-gradient(145deg,#FFD6E8,#FFE8F5,#FFC8DC);
+}
+body.theme-pigglass .toast,
+body.theme-pigglass .undo-bar{
+  background:rgba(61,26,40,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
 
 body.theme-pig{
   --bg:#FFF0F5;--card:#fff;--primary:#3D1A28;--accent:#E87FA0;
@@ -498,12 +651,23 @@ window.toggleNotif=function(){
   if(!notifEnabled){
     if('Notification' in window){
       Notification.requestPermission().then(p=>{
-        if(p==='granted'){notifEnabled=true;showToast('🔔 알림 켜짐!');}
-        else showToast('설정 > Safari > 알림 허용 필요');
+        if(p==='granted'){
+          notifEnabled=true;
+          showToast('🔔 알림 켜짐!');
+          updateNotifStatus();
+        } else showToast('설정 > Safari > 알림 허용 필요');
       });
     } else showToast('이 브라우저는 알림 미지원');
-  } else {notifEnabled=false;showToast('🔕 알림 꺼짐');}
+  } else {
+    notifEnabled=false;
+    showToast('🔕 알림 꺼짐');
+    updateNotifStatus();
+  }
 };
+function updateNotifStatus(){
+  const el=document.getElementById('notifStatus');
+  if(el) el.textContent=notifEnabled?'켬':'끔';
+}
 function sendNotif(title,body){
   if(notifEnabled&&Notification.permission==='granted') new Notification(title,{body,icon:'☕'});
   document.getElementById('notifBadge').classList.add('show');
@@ -924,6 +1088,7 @@ window.openSettings=function(){
   document.getElementById('navTitle').textContent='설정';
   document.getElementById('backBtn').classList.add('show');
   showPage('settings');
+  updateNotifStatus();
 };
 
 window.openThemes=function(){
@@ -933,12 +1098,14 @@ window.openThemes=function(){
 };
 
 const THEMES = [
-  { id:'default', name:'기본☕', sub:'카페 감성', colors:['#C07B4A','#E5DDD5','#3B6B5A'] },
-  { id:'pig',     name:'🐷 피기', sub:'우리 카페 컨셉!', colors:['#F4A7B9','#FFE4EE','#E87FA0'] },
-  { id:'pigdark', name:'🐷 다크피기', sub:'돼지도 야식 먹어요', colors:['#E87FA0','#3A2030','#F4A7B9'] },
-  { id:'pastel',  name:'파스텔', sub:'사랑스러워요', colors:['#E8829A','#F0D5DC','#82C4B8'] },
-  { id:'dark',    name:'다크', sub:'눈이 편해요', colors:['#E8956B','#3A3A3C','#5AC8A0'] },
-  { id:'mono',    name:'모노', sub:'심플하게', colors:['#444','#DDD','#555'] },
+  { id:'default',   name:'기본☕',     sub:'카페 감성',       colors:['#C07B4A','#E5DDD5','#3B6B5A'] },
+  { id:'pig',       name:'🐷 피기',    sub:'우리 카페 컨셉!', colors:['#F4A7B9','#FFE4EE','#E87FA0'] },
+  { id:'pigglass',  name:'🐷✨ 피기글래스', sub:'세련된 돼지',  colors:['#FFD6E8','#FFB8D4','#E8679A'] },
+  { id:'glass',     name:'✨ 글래스',  sub:'아이폰 감성',     colors:['#E8D5F5','#D5E8F5','#9B6EC8'] },
+  { id:'pigdark',   name:'🐷 다크피기', sub:'야간 모드',      colors:['#E87FA0','#3A2030','#F4A7B9'] },
+  { id:'dark',      name:'다크',       sub:'눈이 편해요',     colors:['#E8956B','#3A3A3C','#5AC8A0'] },
+  { id:'pastel',    name:'파스텔',     sub:'사랑스러워요',    colors:['#E8829A','#F0D5DC','#82C4B8'] },
+  { id:'mono',      name:'모노',       sub:'심플하게',        colors:['#444','#DDD','#555'] },
 ];
 
 let currentTheme = localStorage.getItem('cafe-theme') || 'default';
@@ -948,7 +1115,7 @@ function applyTheme(id){
   currentTheme=id;
   localStorage.setItem('cafe-theme',id);
   // Update title emoji
-  const isPig = id==='pig'||id==='pigdark';
+  const isPig = id==='pig'||id==='pigdark'||id==='pigglass';
   document.querySelectorAll('.nav-title, #navTitle').forEach(el=>{
     if(el.textContent.includes('카페 발주')) el.textContent=(isPig?'🐷':'☕')+' 카페 발주';
   });

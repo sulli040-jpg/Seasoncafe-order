@@ -1070,143 +1070,306 @@ function renderFilter(){
 }
 
 
+
 // ── RECIPE DATA ──
-const RECIPES = [
-  // COFFEE
-  { id:'r1', cat:'COFFEE', name:'아메리카노',
-    ingredients:['원두 에스프레소 1샷 (Hot: 160ml + 뜨물 / ICE: 160ml + 얼음)'],
-    tip:'' },
-  { id:'r2', cat:'COFFEE', name:'카페라떼',
-    ingredients:['원두 에스프레소 1샷 + 우유 스팀 (Hot)', '원두 에스프레소 1샷 + 우유 + 얼음 (ICE)'],
-    tip:'' },
-  { id:'r3', cat:'COFFEE', name:'바닐라라떼',
-    ingredients:['에스프레소 1샷 + 바닐라시럽 + 우유 스팀 (Hot)', '에스프레소 1샷 + 바닐라시럽 + 우유 + 얼음 (ICE)'],
-    tip:'' },
-  { id:'r4', cat:'COFFEE', name:'카라멜마끼아또',
-    ingredients:['에스프레소 1샷 + 바닐라시럽 + 우유 스팀 + 카라멜드리즐 (Hot)', '에스프레소 1샷 + 바닐라시럽 + 우유 + 얼음 + 카라멜드리즐 (ICE)'],
-    tip:'' },
-
-  // NON COFFEE
-  { id:'r5', cat:'NON COFFEE', name:'말차라떼',
-    ingredients:['우지말차 + 말차파우더 + 슈가시럽 + 우유 (Hot/ICE)'],
-    tip:'우지말차로 먼저 페이스트 만들고 우유 추가' },
-  { id:'r6', cat:'NON COFFEE', name:'코코아라떼',
-    ingredients:['코코아파우더 + 가라델리초코 + 슈가시럽 + 우유'],
-    tip:'' },
-  { id:'r7', cat:'NON COFFEE', name:'빅트레인라떼',
-    ingredients:['빅트레인 파우더 + 우유 (Hot/ICE)'],
-    tip:'' },
-  { id:'r8', cat:'NON COFFEE', name:'요거트라떼',
-    ingredients:['요거트파우더 + 우유 + 슈가시럽'],
-    tip:'' },
-
-  // SIGNATURE
-  { id:'r9', cat:'SIGNATURE', name:'애사비에이드',
-    ingredients:['애사비 + 슈가시럽 + 탄산수 + 얼음', '자몽원액 or 레몬 추가 가능'],
-    tip:'' },
-  { id:'r10', cat:'SIGNATURE', name:'자몽에이드',
-    ingredients:['자몽 + 자몽원액 + 슈가시럽 + 탄산수 + 얼음'],
-    tip:'' },
-  { id:'r11', cat:'SIGNATURE', name:'레몬에이드',
-    ingredients:['레몬 + 슈가시럽 + 탄산수 + 얼음'],
-    tip:'' },
-  { id:'r12', cat:'SIGNATURE', name:'패션후르츠에이드',
-    ingredients:['패션후르츠 + 슈가시럽 + 탄산수 + 얼음'],
-    tip:'' },
-  { id:'r13', cat:'SIGNATURE', name:'생강청라떼',
-    ingredients:['생강청 + 우유 + 얼음 (ICE)', '생강청 + 우유 스팀 (Hot)'],
-    tip:'' },
-
-  // SMOOTHIE
-  { id:'r14', cat:'SMOOTHIE', name:'블루베리스무디',
-    ingredients:['냉동블루베리 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'],
-    tip:'' },
-  { id:'r15', cat:'SMOOTHIE', name:'딸기스무디',
-    ingredients:['냉동딸기 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'],
-    tip:'' },
-  { id:'r16', cat:'SMOOTHIE', name:'망고스무디',
-    ingredients:['망고 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'],
-    tip:'' },
-
-  // CAFE
-  { id:'r17', cat:'CAFE', name:'아포가토',
-    ingredients:['바닐라아이스크림 + 에스프레소 1샷'],
-    tip:'샷은 주문 즉시 추출해서 바로 서빙' },
-  { id:'r18', cat:'CAFE', name:'아이스크림라떼',
-    ingredients:['바닐라아이스크림 + 에스프레소 + 우유 + 얼음'],
-    tip:'' },
+const DEFAULT_RECIPES = [
+  { id:'r1', cat:'COFFEE', name:'아메리카노', ingredients:['원두 에스프레소 1샷','Hot: 160ml 뜨물 / ICE: 160ml 얼음'], tip:'' },
+  { id:'r2', cat:'COFFEE', name:'카페라떼', ingredients:['에스프레소 1샷 + 우유 스팀 (Hot)','에스프레소 1샷 + 우유 + 얼음 (ICE)'], tip:'' },
+  { id:'r3', cat:'COFFEE', name:'바닐라라떼', ingredients:['에스프레소 1샷 + 바닐라시럽 + 우유 스팀 (Hot)','에스프레소 1샷 + 바닐라시럽 + 우유 + 얼음 (ICE)'], tip:'' },
+  { id:'r4', cat:'COFFEE', name:'카라멜마끼아또', ingredients:['에스프레소 1샷 + 바닐라시럽 + 우유 스팀 + 카라멜드리즐 (Hot)','에스프레소 1샷 + 바닐라시럽 + 우유 + 얼음 + 카라멜드리즐 (ICE)'], tip:'' },
+  { id:'r5', cat:'NON COFFEE', name:'말차라떼', ingredients:['우지말차 + 말차파우더 + 슈가시럽 + 우유'], tip:'우지말차로 페이스트 먼저 만들고 우유 추가' },
+  { id:'r6', cat:'NON COFFEE', name:'코코아라떼', ingredients:['코코아파우더 + 가라델리초코 + 슈가시럽 + 우유'], tip:'' },
+  { id:'r7', cat:'NON COFFEE', name:'빅트레인라떼', ingredients:['빅트레인 파우더 + 우유 (Hot/ICE)'], tip:'' },
+  { id:'r8', cat:'NON COFFEE', name:'요거트라떼', ingredients:['요거트파우더 + 우유 + 슈가시럽'], tip:'' },
+  { id:'r9', cat:'SIGNATURE', name:'애사비에이드', ingredients:['애사비 + 슈가시럽 + 탄산수 + 얼음'], tip:'' },
+  { id:'r10', cat:'SIGNATURE', name:'자몽에이드', ingredients:['자몽 + 자몽원액 + 슈가시럽 + 탄산수 + 얼음'], tip:'' },
+  { id:'r11', cat:'SIGNATURE', name:'레몬에이드', ingredients:['레몬 + 슈가시럽 + 탄산수 + 얼음'], tip:'' },
+  { id:'r12', cat:'SIGNATURE', name:'패션후르츠에이드', ingredients:['패션후르츠 + 슈가시럽 + 탄산수 + 얼음'], tip:'' },
+  { id:'r13', cat:'SIGNATURE', name:'생강청라떼', ingredients:['생강청 + 우유 스팀 (Hot)','생강청 + 우유 + 얼음 (ICE)'], tip:'' },
+  { id:'r14', cat:'SMOOTHIE', name:'블루베리스무디', ingredients:['냉동블루베리 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'], tip:'' },
+  { id:'r15', cat:'SMOOTHIE', name:'딸기스무디', ingredients:['냉동딸기 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'], tip:'' },
+  { id:'r16', cat:'SMOOTHIE', name:'망고스무디', ingredients:['망고 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'], tip:'' },
+  { id:'r17', cat:'CAFE', name:'아포가토', ingredients:['바닐라아이스크림 + 에스프레소 1샷'], tip:'샷은 주문 즉시 추출해서 바로 서빙' },
+  { id:'r18', cat:'CAFE', name:'아이스크림라떼', ingredients:['바닐라아이스크림 + 에스프레소 + 우유 + 얼음'], tip:'' },
 ];
 
-const RECIPE_CATS = ['전체', 'COFFEE', 'NON COFFEE', 'SIGNATURE', 'SMOOTHIE', 'CAFE'];
+const RECIPE_CATS_BASE = ['전체','COFFEE','NON COFFEE','SIGNATURE','SMOOTHIE','CAFE'];
+let recipes = JSON.parse(JSON.stringify(DEFAULT_RECIPES));
+let recipeCats = [...RECIPE_CATS_BASE];
 let recipeFilter = '전체';
 let recipeSearch = '';
 let openRecipeId = null;
+let recipeEditMode = false;
+let editingRecipeId = null;
+
+const RECIPE_REF_KEY = 'cafe-recipes-v1';
+
+function loadRecipes(){
+  try{
+    const s = localStorage.getItem(RECIPE_REF_KEY);
+    if(s){ const d=JSON.parse(s); recipes=d.recipes||recipes; recipeCats=d.cats||recipeCats; }
+  }catch(e){}
+}
+function saveRecipes(){
+  try{ localStorage.setItem(RECIPE_REF_KEY, JSON.stringify({recipes, cats:recipeCats})); }catch(e){}
+}
+
+loadRecipes();
 
 function renderRecipePage(){
-  const content = document.getElementById('recipeContent');
-  content.innerHTML = '';
-  content.className = 'recipe-page';
+  const wrap = document.getElementById('recipeContent');
+  wrap.innerHTML = '';
+  wrap.className = 'recipe-page';
+
+  // Header row with edit toggle
+  const topRow = document.createElement('div');
+  topRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;';
+  topRow.innerHTML = '<div style="font-size:13px;font-weight:600;color:var(--muted)">레시피 목록</div>'
+    + '<button class="edit-toggle" onclick="toggleRecipeEdit()">'+(recipeEditMode?'완료':'편집')+'</button>';
+  wrap.appendChild(topRow);
 
   // Search
   const searchWrap = document.createElement('div');
   searchWrap.className = 'recipe-search';
   searchWrap.innerHTML = '<input id="recipeSearchInput" placeholder="🔍 레시피 검색..." value="'+recipeSearch+'">';
-  content.appendChild(searchWrap);
+  wrap.appendChild(searchWrap);
   document.getElementById('recipeSearchInput').addEventListener('input', e=>{
-    recipeSearch = e.target.value;
-    renderRecipeList(content);
+    recipeSearch=e.target.value; renderRecipeList(wrap);
   });
 
   // Category tabs
-  const tabs = document.createElement('div');
-  tabs.className = 'recipe-cat-tabs';
-  RECIPE_CATS.forEach(cat=>{
-    const t = document.createElement('button');
-    t.className = 'recipe-cat-tab' + (recipeFilter===cat?' active':'');
-    t.textContent = cat;
-    t.onclick = ()=>{ recipeFilter=cat; renderRecipePage(); };
-    tabs.appendChild(t);
-  });
-  content.appendChild(tabs);
+  const tabsWrap = document.createElement('div');
+  tabsWrap.style.cssText = 'display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;';
 
-  renderRecipeList(content);
+  recipeCats.forEach(cat=>{
+    const t=document.createElement('button');
+    t.className='recipe-cat-tab'+(recipeFilter===cat?' active':'');
+
+    if(recipeEditMode && cat!=='전체'){
+      // In edit mode: show cat name + edit/delete icons
+      t.style.cssText='display:flex;align-items:center;gap:4px;padding-right:6px;';
+      t.innerHTML='<span>'+cat+'</span>'
+        +'<span onclick="renameCat(''+cat+'')" style="font-size:11px;padding:0 3px;opacity:0.8">✏️</span>'
+        +'<span onclick="deleteCat(''+cat+'')" style="font-size:11px;padding:0 3px;opacity:0.8;color:var(--need)">✕</span>';
+      t.querySelector('span').onclick=(e)=>{e.stopPropagation();recipeFilter=cat;renderRecipePage();};
+    } else {
+      t.textContent=cat;
+      t.onclick=()=>{recipeFilter=cat;renderRecipePage();};
+    }
+    tabsWrap.appendChild(t);
+  });
+
+  // Add category button
+  if(recipeEditMode){
+    const addCatBtn=document.createElement('button');
+    addCatBtn.className='recipe-cat-tab';
+    addCatBtn.style.cssText='border-style:dashed;color:var(--accent);flex-shrink:0;';
+    addCatBtn.textContent='＋ 카테고리';
+    addCatBtn.onclick=()=>{
+      const name=prompt('새 카테고리 이름:');
+      if(!name||!name.trim())return;
+      const n=name.trim().toUpperCase();
+      if(!recipeCats.includes(n)){recipeCats.push(n);saveRecipes();}
+      recipeFilter=n;renderRecipePage();
+    };
+    tabsWrap.appendChild(addCatBtn);
+  }
+  wrap.appendChild(tabsWrap);
+
+  renderRecipeList(wrap);
+
+  // Add new recipe button
+  if(recipeEditMode){
+    const addBtn=document.createElement('div');
+    addBtn.style.cssText='display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--card);border-radius:12px;border:1.5px dashed var(--border);cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;margin-top:4px;';
+    addBtn.innerHTML='<span style="font-size:18px">＋</span> 새 레시피 추가';
+    addBtn.onclick=()=>openRecipeEditor(null);
+    wrap.appendChild(addBtn);
+  }
 }
 
-function renderRecipeList(content){
-  // remove old list
-  const old = content.querySelector('.recipe-list');
-  if(old) old.remove();
+function renderRecipeList(wrap){
+  const old=wrap.querySelector('.recipe-list');
+  if(old)old.remove();
+  const list=document.createElement('div');
+  list.className='recipe-list';
 
-  const list = document.createElement('div');
-  list.className = 'recipe-list';
-
-  const filtered = RECIPES.filter(r=>{
-    const catMatch = recipeFilter==='전체' || r.cat===recipeFilter;
-    const searchMatch = !recipeSearch || r.name.includes(recipeSearch);
-    return catMatch && searchMatch;
+  const filtered=recipes.filter(r=>{
+    const catMatch=recipeFilter==='전체'||r.cat===recipeFilter;
+    const searchMatch=!recipeSearch||r.name.includes(recipeSearch)||(r.ingredients&&r.ingredients.some(i=>i.includes(recipeSearch)));
+    return catMatch&&searchMatch;
   });
 
   if(!filtered.length){
-    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">레시피가 없어요</div>';
+    list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">레시피가 없어요</div>';
   }
 
   filtered.forEach(r=>{
-    const card = document.createElement('div');
-    card.className = 'recipe-card';
-    const isOpen = openRecipeId === r.id;
-    card.innerHTML = '<div class="recipe-card-header"><div><div class="recipe-card-name">'+r.name+'</div><div class="recipe-card-cat">'+r.cat+'</div></div><div class="recipe-card-arrow">'+(isOpen?'∨':'›')+'</div></div>'
-      + '<div class="recipe-detail'+(isOpen?' open':'')+'"><div class="recipe-detail-divider"></div>'
-      + r.ingredients.map(i=>'<div class="recipe-ingredient">'+i+'</div>').join('')
-      + (r.tip?'<div class="recipe-tip">💡 '+r.tip+'</div>':'')
-      + '</div>';
-    card.querySelector('.recipe-card-header').onclick = ()=>{
-      openRecipeId = isOpen ? null : r.id;
-      renderRecipeList(content.closest('.recipe-page')||content);
-    };
+    const isOpen=openRecipeId===r.id;
+    const card=document.createElement('div');
+    card.className='recipe-card';
+    card.innerHTML=`
+      <div class="recipe-card-header">
+        <div style="flex:1">
+          <div class="recipe-card-name">${r.name}</div>
+          <div class="recipe-card-cat">${r.cat}</div>
+        </div>
+        ${recipeEditMode?`
+          <button onclick="openRecipeEditor('${r.id}')" style="background:none;border:none;font-size:14px;cursor:pointer;padding:4px 8px;color:var(--accent)">✏️</button>
+          <button onclick="deleteRecipe('${r.id}')" style="background:none;border:none;font-size:14px;cursor:pointer;padding:4px 8px;color:var(--need)">✕</button>
+        `:`<div class="recipe-card-arrow">${isOpen?'∨':'›'}</div>`}
+      </div>
+      <div class="recipe-detail${isOpen?' open':''}">
+        <div class="recipe-detail-divider"></div>
+        ${r.ingredients.map(i=>'<div class="recipe-ingredient">'+i+'</div>').join('')}
+        ${r.tip?'<div class="recipe-tip">💡 '+r.tip+'</div>':''}
+      </div>`;
+    if(!recipeEditMode){
+      card.querySelector('.recipe-card-header').onclick=()=>{
+        openRecipeId=isOpen?null:r.id;
+        renderRecipeList(wrap.closest('.recipe-page')||wrap);
+      };
+    }
     list.appendChild(card);
   });
-  content.appendChild(list);
+
+  // Insert before add button
+  const addBtn=wrap.querySelector('[style*="dashed"]');
+  if(addBtn) wrap.insertBefore(list,addBtn);
+  else wrap.appendChild(list);
 }
+
+
+window.renameCat=function(oldName){
+  const newName=prompt('카테고리 이름 변경:', oldName);
+  if(!newName||!newName.trim()||newName.trim()===oldName)return;
+  const n=newName.trim().toUpperCase();
+  if(recipeCats.includes(n)){showToast('이미 있는 카테고리예요');return;}
+  // Update cat list
+  const idx=recipeCats.indexOf(oldName);
+  if(idx>-1)recipeCats[idx]=n;
+  // Update all recipes in that cat
+  recipes.forEach(r=>{if(r.cat===oldName)r.cat=n;});
+  if(recipeFilter===oldName)recipeFilter=n;
+  saveRecipes();renderRecipePage();
+  showToast('✅ "'+n+'"으로 변경됐어요');
+};
+
+window.deleteCat=function(cat){
+  const count=recipes.filter(r=>r.cat===cat).length;
+  const msg=count>0
+    ?'"'+cat+'" 카테고리를 삭제하면 레시피 '+count+'개도 삭제돼요. 삭제할까요?'
+    :'"'+cat+'" 카테고리를 삭제할까요?';
+  if(!confirm(msg))return;
+  recipeCats=recipeCats.filter(c=>c!==cat);
+  recipes=recipes.filter(r=>r.cat!==cat);
+  if(recipeFilter===cat)recipeFilter='전체';
+  saveRecipes();renderRecipePage();
+  showToast('🗑 "'+cat+'" 삭제됨');
+};
+window.toggleRecipeEdit=function(){recipeEditMode=!recipeEditMode;renderRecipePage();};
+
+window.deleteRecipe=function(id){
+  const r=recipes.find(x=>x.id===id);
+  if(!r)return;
+  if(!confirm('"'+r.name+'" 레시피를 삭제할까요?'))return;
+  recipes=recipes.filter(x=>x.id!==id);
+  saveRecipes();renderRecipePage();
+  showToast('🗑 "'+r.name+'" 삭제됨');
+};
+
+window.openRecipeEditor=function(id){
+  const existing=id?recipes.find(r=>r.id===id):null;
+  editingRecipeId=id;
+
+  const wrap=document.getElementById('recipeContent');
+  wrap.innerHTML='';
+  wrap.className='recipe-page';
+
+  const title=document.createElement('div');
+  title.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;';
+  title.innerHTML='<div style="font-size:16px;font-weight:700">'+(existing?'레시피 수정':'새 레시피')+'</div>'
+    +'<button class="edit-toggle" onclick="renderRecipePage()">취소</button>';
+  wrap.appendChild(title);
+
+  // Name input
+  const nameWrap=document.createElement('div');
+  nameWrap.style.cssText='margin-bottom:12px;';
+  nameWrap.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">메뉴 이름</div>'
+    +'<input id="rEditName" class="add-input" style="width:100%;display:block;" placeholder="예: 카페라떼" value="'+(existing?existing.name:'')+'">';
+  wrap.appendChild(nameWrap);
+
+  // Category select
+  const catWrap=document.createElement('div');
+  catWrap.style.cssText='margin-bottom:12px;';
+  catWrap.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">카테고리</div>'
+    +'<select id="rEditCat" style="width:100%;border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;font-family:inherit;background:var(--card);color:var(--primary);outline:none;">'
+    +recipeCats.filter(c=>c!=='전체').map(c=>`<option value="${c}" ${existing&&existing.cat===c?'selected':''}>${c}</option>`).join('')
+    +'</select>';
+  wrap.appendChild(catWrap);
+
+  // Ingredients
+  const ingWrap=document.createElement('div');
+  ingWrap.style.cssText='margin-bottom:12px;';
+  ingWrap.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">재료 / 레시피</div>'
+    +'<div id="rEditIngList"></div>'
+    +'<button onclick="addIngRow()" style="background:none;border:1.5px dashed var(--border);border-radius:7px;padding:7px 12px;font-size:12px;color:var(--accent);font-weight:600;font-family:inherit;cursor:pointer;width:100%;margin-top:6px;">＋ 재료 추가</button>';
+  wrap.appendChild(ingWrap);
+
+  const ings=existing?[...existing.ingredients]:[''];
+  function renderIngRows(){
+    const ingList=document.getElementById('rEditIngList');
+    if(!ingList)return;
+    ingList.innerHTML='';
+    ings.forEach((ing,idx)=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:6px;';
+      row.innerHTML='<input class="add-input" style="flex:1;" placeholder="재료 입력..." value="'+ing+'">'
+        +'<button onclick="removeIngRow('+idx+')" style="background:none;border:none;font-size:16px;color:#ccc;cursor:pointer;padding:4px;">✕</button>';
+      row.querySelector('input').addEventListener('input',e=>{ ings[idx]=e.target.value; });
+      ingList.appendChild(row);
+    });
+  }
+  renderIngRows();
+
+  window.addIngRow=function(){ ings.push(''); renderIngRows(); };
+  window.removeIngRow=function(idx){ ings.splice(idx,1); renderIngRows(); };
+
+  // Tip
+  const tipWrap=document.createElement('div');
+  tipWrap.style.cssText='margin-bottom:20px;';
+  tipWrap.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;">💡 팁 (선택)</div>'
+    +'<input id="rEditTip" class="add-input" style="width:100%;display:block;" placeholder="예: 샷은 주문 즉시 추출" value="'+(existing?existing.tip:'')+'">';
+  wrap.appendChild(tipWrap);
+  wrap.appendChild(ingWrap); // re-insert after name/cat
+  wrap.appendChild(tipWrap);
+
+  // Save button
+  const saveBtn=document.createElement('button');
+  saveBtn.className='add-ok';
+  saveBtn.style.cssText='width:100%;padding:12px;font-size:15px;border-radius:10px;';
+  saveBtn.textContent=existing?'수정 완료':'추가하기';
+  saveBtn.onclick=()=>{
+    const name=document.getElementById('rEditName')?.value.trim();
+    const cat=document.getElementById('rEditCat')?.value;
+    const tip=document.getElementById('rEditTip')?.value.trim()||'';
+    const finalIngs=ings.filter(i=>i.trim());
+    if(!name){showToast('메뉴 이름을 입력해주세요');return;}
+    if(!finalIngs.length){showToast('재료를 하나 이상 입력해주세요');return;}
+    if(existing){
+      const idx=recipes.findIndex(r=>r.id===id);
+      if(idx>-1) recipes[idx]={...recipes[idx],name,cat,ingredients:finalIngs,tip};
+    } else {
+      recipes.push({id:'r'+Date.now(),cat,name,ingredients:finalIngs,tip});
+    }
+    saveRecipes();
+    recipeEditMode=true;
+    renderRecipePage();
+    showToast(existing?'✅ 수정됐어요!':'✅ 추가됐어요!');
+  };
+  wrap.appendChild(saveBtn);
+};
+
 
 function renderAll(){
   if(currentTab==="recipe"&&document.getElementById("page-recipe").classList.contains("active")){renderRecipePage();return;}

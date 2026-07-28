@@ -189,6 +189,29 @@ body.theme-glass { font-family: 'Noto Sans KR', sans-serif; }
 body.theme-pigdark { font-family: 'Jua', 'Noto Sans KR', sans-serif; }
 body.theme-mono { font-family: 'Noto Sans KR', sans-serif; }
 
+
+/* ── RECIPE PAGE ── */
+.recipe-page{padding:14px 14px 20px;}
+.recipe-search{display:flex;gap:8px;margin-bottom:14px;}
+.recipe-search input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:14px;font-family:inherit;background:var(--card);color:var(--primary);outline:none;}
+.recipe-search input:focus{border-color:var(--accent);}
+.recipe-cat-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+.recipe-cat-tabs::-webkit-scrollbar{display:none;}
+.recipe-cat-tab{flex-shrink:0;border:1.5px solid var(--border);background:var(--card);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;}
+.recipe-cat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.recipe-card{background:var(--card);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px;cursor:pointer;transition:background .12s;}
+.recipe-card:active{background:var(--bg);}
+.recipe-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;}
+.recipe-card-name{font-size:15px;font-weight:700;}
+.recipe-card-cat{font-size:11px;color:var(--muted);margin-top:2px;}
+.recipe-card-arrow{color:var(--border);font-size:18px;}
+.recipe-detail{display:none;padding:0 14px 14px;}
+.recipe-detail.open{display:block;}
+.recipe-detail-divider{height:1px;background:var(--border);margin-bottom:12px;}
+.recipe-ingredient{font-size:13px;color:var(--muted);padding:3px 0;display:flex;gap:6px;align-items:flex-start;}
+.recipe-ingredient::before{content:"·";color:var(--accent);font-weight:700;flex-shrink:0;}
+.recipe-tip{font-size:12px;color:var(--accent);margin-top:8px;padding:8px 10px;background:var(--need-light);border-radius:8px;border-left:3px solid var(--accent);}
+
 /* ── THEMES ── */
 
 body.theme-glass{
@@ -511,9 +534,9 @@ body.theme-green{
     <div>베이킹</div>
     <div class="tab-dot"></div>
   </button>
-  <button class="tab" id="tab-all" onclick="switchTab('all')">
-    <div class="tab-icon">📋</div>
-    <div>전체</div>
+  <button class="tab" id="tab-recipe" onclick="switchTab('recipe')">
+    <div class="tab-icon">📖</div>
+    <div>레시피</div>
     <div class="tab-dot"></div>
   </button>
 </div>
@@ -728,14 +751,25 @@ window.jumpToItem=function(name){
 
 // ── Tab ──
 window.switchTab=function(tab){
-  currentTab=tab;currentCatId=null;editMode=false;
-  showPage('home');updateTabBar();renderHome();
-  document.getElementById('backBtn').classList.remove('show');
-  document.getElementById('navTitle').textContent='☕ 카페 발주';
+  currentTab=tab;currentCatId=null;editMode=false;activeFilter=null;
+  document.getElementById('chipNeed').classList.remove('active-filter');
+  document.getElementById('chipDone').classList.remove('active-filter');
+  updateTabBar();
+  if(tab==='recipe'){
+    showPage('recipe');
+    document.getElementById('backBtn').classList.remove('show');
+    document.getElementById('navTitle').textContent='📖 레시피';
+    renderRecipePage();
+  } else {
+    showPage('home');renderHome();
+    document.getElementById('backBtn').classList.remove('show');
+    const isPig=currentTheme==='pig'||currentTheme==='pigdark'||currentTheme==='pigglass';
+    document.getElementById('navTitle').textContent=(isPig?'🐷':'☕')+' 카페 발주';
+  }
 };
 function updateTabBar(){
-  ['hall','baking','all'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active',t===currentTab);
+  ['hall','baking','recipe'].forEach(t=>{
+    const el=document.getElementById('tab-'+t); if(el) el.classList.toggle('active',t===currentTab);
   });
 }
 
@@ -1028,6 +1062,145 @@ function renderFilter(){
   if(!found){
     content.innerHTML=`<div class="filter-empty">${activeFilter==='need'?'🔴 발주요망':'🟢 발주완료'} 항목이 없어요</div>`;
   }
+}
+
+
+// ── RECIPE DATA ──
+const RECIPES = [
+  // COFFEE
+  { id:'r1', cat:'COFFEE', name:'아메리카노',
+    ingredients:['원두 에스프레소 1샷 (Hot: 160ml + 뜨물 / ICE: 160ml + 얼음)'],
+    tip:'' },
+  { id:'r2', cat:'COFFEE', name:'카페라떼',
+    ingredients:['원두 에스프레소 1샷 + 우유 스팀 (Hot)', '원두 에스프레소 1샷 + 우유 + 얼음 (ICE)'],
+    tip:'' },
+  { id:'r3', cat:'COFFEE', name:'바닐라라떼',
+    ingredients:['에스프레소 1샷 + 바닐라시럽 + 우유 스팀 (Hot)', '에스프레소 1샷 + 바닐라시럽 + 우유 + 얼음 (ICE)'],
+    tip:'' },
+  { id:'r4', cat:'COFFEE', name:'카라멜마끼아또',
+    ingredients:['에스프레소 1샷 + 바닐라시럽 + 우유 스팀 + 카라멜드리즐 (Hot)', '에스프레소 1샷 + 바닐라시럽 + 우유 + 얼음 + 카라멜드리즐 (ICE)'],
+    tip:'' },
+
+  // NON COFFEE
+  { id:'r5', cat:'NON COFFEE', name:'말차라떼',
+    ingredients:['우지말차 + 말차파우더 + 슈가시럽 + 우유 (Hot/ICE)'],
+    tip:'우지말차로 먼저 페이스트 만들고 우유 추가' },
+  { id:'r6', cat:'NON COFFEE', name:'코코아라떼',
+    ingredients:['코코아파우더 + 가라델리초코 + 슈가시럽 + 우유'],
+    tip:'' },
+  { id:'r7', cat:'NON COFFEE', name:'빅트레인라떼',
+    ingredients:['빅트레인 파우더 + 우유 (Hot/ICE)'],
+    tip:'' },
+  { id:'r8', cat:'NON COFFEE', name:'요거트라떼',
+    ingredients:['요거트파우더 + 우유 + 슈가시럽'],
+    tip:'' },
+
+  // SIGNATURE
+  { id:'r9', cat:'SIGNATURE', name:'애사비에이드',
+    ingredients:['애사비 + 슈가시럽 + 탄산수 + 얼음', '자몽원액 or 레몬 추가 가능'],
+    tip:'' },
+  { id:'r10', cat:'SIGNATURE', name:'자몽에이드',
+    ingredients:['자몽 + 자몽원액 + 슈가시럽 + 탄산수 + 얼음'],
+    tip:'' },
+  { id:'r11', cat:'SIGNATURE', name:'레몬에이드',
+    ingredients:['레몬 + 슈가시럽 + 탄산수 + 얼음'],
+    tip:'' },
+  { id:'r12', cat:'SIGNATURE', name:'패션후르츠에이드',
+    ingredients:['패션후르츠 + 슈가시럽 + 탄산수 + 얼음'],
+    tip:'' },
+  { id:'r13', cat:'SIGNATURE', name:'생강청라떼',
+    ingredients:['생강청 + 우유 + 얼음 (ICE)', '생강청 + 우유 스팀 (Hot)'],
+    tip:'' },
+
+  // SMOOTHIE
+  { id:'r14', cat:'SMOOTHIE', name:'블루베리스무디',
+    ingredients:['냉동블루베리 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'],
+    tip:'' },
+  { id:'r15', cat:'SMOOTHIE', name:'딸기스무디',
+    ingredients:['냉동딸기 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'],
+    tip:'' },
+  { id:'r16', cat:'SMOOTHIE', name:'망고스무디',
+    ingredients:['망고 + 요거트파우더 + 우유 + 얼음 + 슈가시럽'],
+    tip:'' },
+
+  // CAFE
+  { id:'r17', cat:'CAFE', name:'아포가토',
+    ingredients:['바닐라아이스크림 + 에스프레소 1샷'],
+    tip:'샷은 주문 즉시 추출해서 바로 서빙' },
+  { id:'r18', cat:'CAFE', name:'아이스크림라떼',
+    ingredients:['바닐라아이스크림 + 에스프레소 + 우유 + 얼음'],
+    tip:'' },
+];
+
+const RECIPE_CATS = ['전체', 'COFFEE', 'NON COFFEE', 'SIGNATURE', 'SMOOTHIE', 'CAFE'];
+let recipeFilter = '전체';
+let recipeSearch = '';
+let openRecipeId = null;
+
+function renderRecipePage(){
+  const content = document.getElementById('recipeContent');
+  content.innerHTML = '';
+  content.className = 'recipe-page';
+
+  // Search
+  const searchWrap = document.createElement('div');
+  searchWrap.className = 'recipe-search';
+  searchWrap.innerHTML = '<input id="recipeSearchInput" placeholder="🔍 레시피 검색..." value="'+recipeSearch+'">';
+  content.appendChild(searchWrap);
+  document.getElementById('recipeSearchInput').addEventListener('input', e=>{
+    recipeSearch = e.target.value;
+    renderRecipeList(content);
+  });
+
+  // Category tabs
+  const tabs = document.createElement('div');
+  tabs.className = 'recipe-cat-tabs';
+  RECIPE_CATS.forEach(cat=>{
+    const t = document.createElement('button');
+    t.className = 'recipe-cat-tab' + (recipeFilter===cat?' active':'');
+    t.textContent = cat;
+    t.onclick = ()=>{ recipeFilter=cat; renderRecipePage(); };
+    tabs.appendChild(t);
+  });
+  content.appendChild(tabs);
+
+  renderRecipeList(content);
+}
+
+function renderRecipeList(content){
+  // remove old list
+  const old = content.querySelector('.recipe-list');
+  if(old) old.remove();
+
+  const list = document.createElement('div');
+  list.className = 'recipe-list';
+
+  const filtered = RECIPES.filter(r=>{
+    const catMatch = recipeFilter==='전체' || r.cat===recipeFilter;
+    const searchMatch = !recipeSearch || r.name.includes(recipeSearch);
+    return catMatch && searchMatch;
+  });
+
+  if(!filtered.length){
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">레시피가 없어요</div>';
+  }
+
+  filtered.forEach(r=>{
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    const isOpen = openRecipeId === r.id;
+    card.innerHTML = '<div class="recipe-card-header"><div><div class="recipe-card-name">'+r.name+'</div><div class="recipe-card-cat">'+r.cat+'</div></div><div class="recipe-card-arrow">'+(isOpen?'∨':'›')+'</div></div>'
+      + '<div class="recipe-detail'+(isOpen?' open':'')+'"><div class="recipe-detail-divider"></div>'
+      + r.ingredients.map(i=>'<div class="recipe-ingredient">'+i+'</div>').join('')
+      + (r.tip?'<div class="recipe-tip">💡 '+r.tip+'</div>':'')
+      + '</div>';
+    card.querySelector('.recipe-card-header').onclick = ()=>{
+      openRecipeId = isOpen ? null : r.id;
+      renderRecipeList(content.closest('.recipe-page')||content);
+    };
+    list.appendChild(card);
+  });
+  content.appendChild(list);
 }
 
 function renderAll(){if(activeFilter&&activeFilter!==null&&document.getElementById("page-filter").classList.contains("active"))renderFilter();else if(currentCatId)renderDetail();else renderHome();}

@@ -483,6 +483,10 @@ body.theme-green{
   <div id="filterContent"></div>
 </div>
 
+<div id="page-recipe" class="page">
+  <div id="recipeContent"></div>
+</div>
+
 <div id="page-settings" class="page">
   <div class="settings-section">
     <div class="settings-label">디스플레이</div>
@@ -821,9 +825,9 @@ function renderHome(){
   document.getElementById('doneCount').textContent=done;
   document.getElementById('totalCount').textContent=total;
 
-  const filtered=currentTab==='all'?cats:cats.filter(c=>c.tab===currentTab);
+  const filtered=(currentTab==='all'||currentTab==='recipe')?cats:cats.filter(c=>c.tab===currentTab);
   document.getElementById('homeLabel').textContent=
-    currentTab==='hall'?'홀 카테고리':currentTab==='baking'?'베이킹 카테고리':'전체 카테고리';
+    currentTab==='hall'?'홀 카테고리':currentTab==='baking'?'베이킹 카테고리':currentTab==='recipe'?'전체 카테고리':'전체 카테고리';
 
   const grid=document.getElementById('catGrid');
   grid.innerHTML='';

@@ -825,7 +825,8 @@ function renderHome(){
   document.getElementById('doneCount').textContent=done;
   document.getElementById('totalCount').textContent=total;
 
-  const filtered=(currentTab==='all'||currentTab==='recipe')?cats:cats.filter(c=>c.tab===currentTab);
+  const filtered=(currentTab==='all'||currentTab==='recipe')?cats:cats.filter(c=>c&&c.tab===currentTab);
+  if(!filtered||filtered.length===0){cats=JSON.parse(JSON.stringify(DEFAULT_CATS));renderHome();return;}
   document.getElementById('homeLabel').textContent=
     currentTab==='hall'?'홀 카테고리':currentTab==='baking'?'베이킹 카테고리':currentTab==='recipe'?'전체 카테고리':'전체 카테고리';
 
@@ -1207,7 +1208,12 @@ function renderRecipeList(content){
   content.appendChild(list);
 }
 
-function renderAll(){if(activeFilter&&activeFilter!==null&&document.getElementById("page-filter").classList.contains("active"))renderFilter();else if(currentCatId)renderDetail();else renderHome();}
+function renderAll(){
+  if(currentTab==="recipe"&&document.getElementById("page-recipe").classList.contains("active")){renderRecipePage();return;}
+  if(activeFilter&&activeFilter!==null&&document.getElementById("page-filter").classList.contains("active")){renderFilter();return;}
+  if(currentCatId){renderDetail();return;}
+  renderHome();
+}
 
 // ── Firestore ──
 onSnapshot(STATE_REF,(snap)=>{
@@ -1217,18 +1223,18 @@ onSnapshot(STATE_REF,(snap)=>{
     const data=snap.data();
     const newState=data.state||{};
     // Merge: start from DEFAULT_CATS, then add any user-added items from Firebase
+    // Always start from DEFAULT_CATS, merge user-added items only
     const savedCats=data.cats||[];
     const newCats=JSON.parse(JSON.stringify(DEFAULT_CATS));
-    if(savedCats.length>0){
+    if(Array.isArray(savedCats) && savedCats.length>0){
       newCats.forEach(defCat=>{
-        const savedCat=savedCats.find(c=>c.id===defCat.id);
-        if(savedCat){
+        const savedCat=savedCats.find(c=>c&&c.id===defCat.id);
+        if(savedCat && Array.isArray(savedCat.sections)){
           defCat.sections.forEach((defSec,si)=>{
-            const savedSec=savedCat.sections&&savedCat.sections[si];
-            if(savedSec&&savedSec.items){
-              // Add user-added items not in default
+            const savedSec=savedCat.sections[si];
+            if(savedSec && Array.isArray(savedSec.items)){
               savedSec.items.forEach(item=>{
-                if(!defSec.items.includes(item)) defSec.items.push(item);
+                if(item && !defSec.items.includes(item)) defSec.items.push(item);
               });
             }
           });
@@ -1323,6 +1329,13 @@ function renderThemes(){
 
 // Apply saved theme on load
 applyTheme(currentTheme);
+
+// Auto-enable notifications if already granted
+if('Notification' in window && Notification.permission === 'granted'){
+  notifEnabled = true;
+  const ns = document.getElementById('notifStatus');
+  if(ns) ns.textContent = '켬';
+}
 
 const now=new Date();
 document.getElementById('navTitle').textContent='☕ 카페 발주';

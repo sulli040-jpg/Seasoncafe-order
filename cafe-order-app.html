@@ -1148,10 +1148,21 @@ function renderRecipePage(){
     if(recipeEditMode && cat!=='전체'){
       // In edit mode: show cat name + edit/delete icons
       t.style.cssText='display:flex;align-items:center;gap:4px;padding-right:6px;';
-      t.innerHTML='<span>'+cat+'</span>'
-        +'<span onclick="renameCat(''+cat+'')" style="font-size:11px;padding:0 3px;opacity:0.8">✏️</span>'
-        +'<span onclick="deleteCat(''+cat+'')" style="font-size:11px;padding:0 3px;opacity:0.8;color:var(--need)">✕</span>';
-      t.querySelector('span').onclick=(e)=>{e.stopPropagation();recipeFilter=cat;renderRecipePage();};
+      const catName = cat;
+      const spanName = document.createElement('span');
+      spanName.textContent = catName;
+      spanName.onclick = (e)=>{e.stopPropagation();recipeFilter=catName;renderRecipePage();};
+      const spanEdit = document.createElement('span');
+      spanEdit.textContent = '✏️';
+      spanEdit.style.cssText = 'font-size:11px;padding:0 3px;opacity:0.8;';
+      spanEdit.onclick = (e)=>{e.stopPropagation();renameCat(catName);};
+      const spanDel = document.createElement('span');
+      spanDel.textContent = '✕';
+      spanDel.style.cssText = 'font-size:11px;padding:0 3px;opacity:0.8;color:var(--need);';
+      spanDel.onclick = (e)=>{e.stopPropagation();deleteCat(catName);};
+      t.appendChild(spanName);
+      t.appendChild(spanEdit);
+      t.appendChild(spanDel);
     } else {
       t.textContent=cat;
       t.onclick=()=>{recipeFilter=cat;renderRecipePage();};
